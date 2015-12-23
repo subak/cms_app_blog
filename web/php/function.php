@@ -6,13 +6,8 @@
  * Time: 20:32
  */
 
-function __autoload($className) {
-  var_dump("hogehuga");
-  require_once 'web/php/class/'.$className.'.php';
-  return true;
-}
 
-function entry_path ($id, $ext = 'entry.md') {
+function entry_path ($id, $ext = '.md') {
   return "content/entry/${id}.${ext}";
 }
 
