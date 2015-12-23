@@ -3,6 +3,6 @@
 # yamlで出力するオプションを備える
 
 paste \
-  <(find content/entry/* -type d | xargs basename) \
-  <(find content/entry/* -name "*.md" | xargs -n 1 -P 2 head -1 | sed -e 's/^[# ]*//') \
+  <(web/bin/ids.sh) \
+  <(web/bin/ids.sh | xargs -n 1 -P 2 web/bin/entry_title.sh ) \
   | sed -e 's/:/: /'

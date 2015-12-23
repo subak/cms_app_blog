@@ -11,8 +11,8 @@ sitemap = xml.urlset xmlns:'http://www.sitemaps.org/schemas/sitemap/0.9' do
   `web/bin/ids.sh`.split("\n").each do |id|
     xml.url do
       xml.loc("#{site['scheme']}://#{site['host']}/#{id}/")
-      entry = YAML.load_file("content/entry/#{id}/#{id}.meta.yml")
-      xml.lastmod(entry['updated'])
+      #entry = YAML.load_file("content/entry/#{id}/#{id}.meta.yml")
+      xml.lastmod(`web/bin/entry_updated.sh #{id}`)
     end
   end
 end

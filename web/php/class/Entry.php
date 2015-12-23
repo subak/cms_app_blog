@@ -8,9 +8,9 @@ class Entry extends Page
   public function __construct($context) {
     parent::__construct($context);
     $this->id = $this->query['id'];
-    $this->content = $this->entry($this->id);
+    $this->content = $this->entry();
     array_push($this->title, $this->get_title_from_content());
-    $this->date = new DateTime($this->entry_created_date($this->id));
+    $this->date = new DateTime($this->entry_created_date());
   }
 
   private function entry_path($ext = '.md') {
@@ -18,22 +18,19 @@ class Entry extends Page
     return "content/entry/${id}/${id}${ext}";
   }
 
-  private function entry($id) {
+  private function entry() {
     return shell_exec('pandoc -f markdown_github -t html5  '.$this->entry_path().
       ' | sed -e "s/<p>&lt;\?/<?/" | sed -e "s/\?&gt;<\/p>/?>/"'.
       ' | php');
   }
 
-  private function entry_created_date($id) {
-    if ( $meta = yaml_parse_file($this->entry_path('.meta.yml')) ) {
-      return $meta["created"];
-    } else {
-      return exec('git log --date=iso --pretty=format:"%cd" '.$this->entry_path().' | tail -1');
-    }
+  private function entry_created_date() {
+    $id = $this->id;
+    return `web/bin/entry_created.sh ${id}`;
   }
 
   private function get_title_from_content() {
-    preg_match('@.*@', $this->content, $result);
-    return strip_tags($result[0]);
+    $id = $this->id;
+    return `web/bin/entry_title.sh ${id}`;
   }
 }
