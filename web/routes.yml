@@ -1,0 +1,12 @@
+-
+  route: ^/(?<id>[\w\W\d]{4})
+  path: web/index.html
+  class: Entry
+  handler: web/bin/main.php
+  builder: web/bin/build.php
+-
+  route: archives(/(?<yyyymm>[1-9][0-9]{4}([1][0-2]|[0][1-9])))?
+  path: web/archive.html
+  class: archives
+  handler: web/bin/main.php
+  builder: web/bin/build.php
