@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php
+require_once 'web/php/function.php';
 
 $url = end($_SERVER["argv"]);
 reset($_SERVER["argv"]);
@@ -12,7 +13,7 @@ spl_autoload_register(function ($className)
   require_once 'web/php/class/' . $className . '.php';
   return true;
 });
-$page = new $class($context);
-include $context['path'];
+$page= new $class($context);
+$page->render();
 
 exit(0);

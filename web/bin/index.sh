@@ -2,7 +2,8 @@
 
 # yamlで出力するオプションを備える
 
-paste \
-  <(web/bin/ids.sh) \
-  <(web/bin/ids.sh | xargs -n 1 -P 2 web/bin/entry_title.sh ) \
-  | sed -e 's/:/: /'
+set -ue
+
+target=${1:-title}
+
+entry_ids.sh | xargs -n 1 -P4 exec_and_print_args.sh entry_${target}.sh | awk '{print $2,$1}'

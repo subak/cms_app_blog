@@ -13,11 +13,9 @@ to_file = "#{to_dir}/index.html"
 
 FileUtils.mkdir_p(to_dir)
 
-if File.exists?(from_dir)
-  exts = %w(jpg png)
-  filter = "-name \"*.#{exts.join('" -o -name "*.')}\""
-  print `find #{from_dir}/* \\( #{filter} \\) -exec cp -v {} #{to_dir} \\;`
-end
+exts = %w(jpg png)
+filter = "-name \"*.#{exts.join('" -o -name "*.')}\""
+print `find #{from_dir}/* \\( #{filter} \\) -exec cp -v {} #{to_dir} \\;`
 
-File.write(to_file, `web/bin/main.php '#{uri}'`)
+File.write(to_file, `page.php '#{uri}'`)
 puts to_file

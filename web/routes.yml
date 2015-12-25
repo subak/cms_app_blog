@@ -1,12 +1,30 @@
 -
-  route: ^/(?<id>[\w\W\d]{4})
-  path: web/index.html
+  route: ^/(?<id>[\w\W\d]{4})/$
+  path: web/html/main.html
   class: Entry
-  handler: web/bin/main.php
-  builder: web/bin/build.php
+  handler: page.php
+  builder: build_entry.rb
+
 -
   route: archives(/(?<yyyymm>[1-9][0-9]{4}([1][0-2]|[0][1-9])))?
-  path: web/archive.html
-  class: archives
-  handler: web/bin/main.php
-  builder: web/bin/build.php
+  path: web/html/archive.html
+  class: Archive
+  handler: archive.php
+  builder: build_entry.rb
+
+# トップページ
+-
+  route: ^(/index\.html|/)$
+  path: web/html/main.html
+  class: Index
+  page: 1
+  handler: page.php
+  builder: build_index.rb
+
+# ページ送り
+-
+  route: ^/page/(?<page>[\d]+)/$
+  path: web/html/main.html
+  class: Index
+  handler: page.php
+  builder: build_index.rb

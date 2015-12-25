@@ -1,0 +1,18 @@
+<div class="post-header mb2">
+  <!--ここにh1を移動-->
+  <?= $this->tag('span', $this->created->format('Y-m-d'), array('class' => 'post-meta')) ?>
+  <br>
+
+  <!--<span class="post-meta small">-->
+    <!--2 minute read-->
+  <!--</span>-->
+</div>
+
+<article class="post-content">
+  <?= $this->entry() ?>
+</article>
+
+<script>
+  var span = document.querySelector('span.post-meta');
+  span.parentNode.insertBefore(document.querySelector('article h1'), span);
+</script>
