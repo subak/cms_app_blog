@@ -10,20 +10,29 @@ class Index extends Page
 {
   const NUM_OF_ENTRIES = 5;
 
-  private $ids = array();
-  private $num_of_entries;
-
   public function __construct($context) {
     parent::__construct($context);
-    $num = self::NUM_OF_ENTRIES;
+  }
 
-    $page = intval($this->query('page'));
-    $start = ($page - 1) * $num + 1;
-    $end = $page * $num;
+  public function ids() {
+    static $ids = null;
+    if (is_null($ids)) {
+      $num = self::NUM_OF_ENTRIES;
+      $page = intval($this->query('page'));
+      $start = ($page - 1) * $num + 1;
+      $end = $page * $num;
+      $ids = explode("\n", `index.sh created | sort -k2 -r | sed -n '${start},${end}p' | cut -d' ' -f 1`);
+      $ids = array_values(array_filter($ids, "strlen"));
+    }
+    return $ids;
+  }
 
-    $ids = explode("\n", `index.sh created | sort -k2 -r | sed -n '${start},${end}p' | cut -d' ' -f 1`);
-    $this->ids = array_values(array_filter($ids, "strlen"));
-    $this->num_of_entries = intval(`entry_ids.sh | wc -l`);
+  public function num_of_entries() {
+    static $num = null;
+    if (is_null($num)) {
+      $num = intval(`entry_ids.sh | wc -l`);
+    }
+    return $num;
   }
 
   public function content() {
@@ -48,6 +57,6 @@ class Index extends Page
 
   public function next_page() {
     $page = intval($this->query('page'));
-    return ($page * self::NUM_OF_ENTRIES) >= $this->num_of_entries ? null : $page + 1;
+    return ($page * self::NUM_OF_ENTRIES) >= $this->num_of_entries() ? null : $page + 1;
   }
 }

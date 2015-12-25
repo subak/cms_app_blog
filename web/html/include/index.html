@@ -1,17 +1,11 @@
 <div class="home">
   <div class="posts">
-    <?= $this->each($this->ids, function ($i, $id) { ?>
+    <?= $this->each($this->ids(), function ($i, $id) { ?>
 
     <div class="post py3">
-
       <?= $this->tag('p', entry_created($id)->format('Y-m-d'), array('class' => 'post-meta')) ?>
-      <!--<p class="post-meta">Jul 11, 2015</p>-->
 
       <?= $this->link_to("", "/${id}/index.html", array('class' => 'post-link')) ?>
-
-      <!--<a href="/jekyll/pixyll/2015/07/11/announcing-pixyll-version-2/" class="post-link">-->
-        <!--<h3 class="h1 post-title">一覧ページ</h3>-->
-      <!--</a>-->
 
       <article class="post-content">
         <?= entry_summary($id) ?>
@@ -36,14 +30,13 @@
       <? else: ?>
       <span class="pagination-item disabled">Older</span>
       <? endif; ?>
-
-      <!--<a class="pagination-item" href="/page2/">Older</a>-->
     </div>
   </div>
 </div>
 
 
 <script>
+  // h1の場所を移動
   [].forEach.call(document.querySelectorAll('.post.py3'), function (el) {
     var title = el.querySelector('.post-content h1');
     title.classList.add('post-title');

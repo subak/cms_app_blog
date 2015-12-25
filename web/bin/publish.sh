@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cp -a web/html/assets web/public
+cp -v -a web/html/assets web/public
 entry_ids.sh | sed -e 's/^/\//' | sed -e 's/$/\//' | xargs -P 4 -n 1 router.rb | xargs -P 4 -n 1 build_entry.rb
 
 sitemap.rb > web/public/sitemap.xml

@@ -3,7 +3,7 @@
 require 'builder'
 require 'yaml'
 
-site = YAML.load_file 'web/site.meta.yml'
+site = YAML.load_file 'web/site.yml'
 
 xml = Builder::XmlMarkup.new indent:2
 xml.instruct! :xml, version:1.0, encoding:'UTF-8'

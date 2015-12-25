@@ -1,6 +1,5 @@
 <div class="post-header mb2">
-  <!--ここにh1を移動-->
-  <?= $this->tag('span', $this->created->format('Y-m-d'), array('class' => 'post-meta')) ?>
+  <?= $this->tag('span', entry_created($this->id)->format('Y-m-d'), array('class' => 'post-meta')) ?>
   <br>
 
   <!--<span class="post-meta small">-->
@@ -9,10 +8,11 @@
 </div>
 
 <article class="post-content">
-  <?= $this->entry() ?>
+  <?= entry($this->id) ?>
 </article>
 
 <script>
+  // h1の場所を移動
   var span = document.querySelector('span.post-meta');
   span.parentNode.insertBefore(document.querySelector('article h1'), span);
 </script>

@@ -23,8 +23,8 @@ function entry_created($id) {
   return new DateTime(`entry_created.sh ${id}`);
 }
 
-function get_title_from_content($id) {
-  return new DateTime(`entry_title.sh ${id}`);
+function entry_updated($id) {
+  return new DateTime(`entry_updated.sh ${id}`);
 }
 
 function attr($array) {
@@ -37,6 +37,11 @@ function attr($array) {
   }
   $attr = empty($attributes) ? "" : " ".join(" ", $attributes);
   return $attr;
+}
+
+function entry($id) {
+  return shell_exec('pandoc -f markdown_github+footnotes+inline_notes -t html5 '.entry_path($id).
+    ' | sed -e "s/<p>&lt;\?/<?/" | sed -e "s/\?&gt;<\/p>/?>/"');
 }
 
 function entry_summary($id) {
