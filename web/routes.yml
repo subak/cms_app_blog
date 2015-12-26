@@ -1,5 +1,5 @@
 -
-  route: ^/(?<id>[\w\W\d]{4})/$
+  route: ^/(?<id>[\w\W\d]{4})/(?:index.html)?$
   path: web/html/main.html
   class: Entry
   handler: page.php
@@ -23,8 +23,13 @@
 
 # ページ送り
 -
-  route: ^/page/(?<page>[\d]+)/$
+  route: ^/page/(?<page>[\d]+)/(?:index.html)?$
   path: web/html/main.html
   class: Index
   handler: page.php
   builder: build_index.rb
+
+-
+  route: ^/sitemap.xml$
+  path: web/html/sitemap.xml
+  class: Page

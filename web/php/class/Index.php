@@ -18,7 +18,7 @@ class Index extends Page
     static $ids = null;
     if (is_null($ids)) {
       $num = self::NUM_OF_ENTRIES;
-      $page = intval($this->query('page'));
+      $page = intval($this->context('page'));
       $start = ($page - 1) * $num + 1;
       $end = $page * $num;
       $ids = explode("\n", `index.sh created | sort -k2 -r | sed -n '${start},${end}p' | cut -d' ' -f 1`);
@@ -51,12 +51,12 @@ class Index extends Page
   }
 
   public function prev_page() {
-    $page = intval($this->query('page')) - 1;
+    $page = intval($this->context('page')) - 1;
     return $page === 0 ? null : $page;
   }
 
   public function next_page() {
-    $page = intval($this->query('page'));
+    $page = intval($this->context('page'));
     return ($page * self::NUM_OF_ENTRIES) >= $this->num_of_entries() ? null : $page + 1;
   }
 }

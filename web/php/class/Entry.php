@@ -6,7 +6,7 @@ class Entry extends Page
 
   public function __construct($context) {
     parent::__construct($context);
-    $this->id = $this->query('id');
+    $this->id = $this->context('id');
   }
 
   public function title() {
@@ -24,7 +24,13 @@ class Entry extends Page
   public function meta($key) {
     static $meta = null;
     if (is_null($meta)) {
-      $meta = yaml_parse_file(entry_path($this->id, ".yml"));
+      $path = entry_path($this->id, ".yml");
+      //$meta = json_decode(`yaml2json ${path}`, true);
+      if (file_exists($path)) {
+        $meta = yaml_parse_file(entry_path($this->id, ".yml"));
+      } else {
+        $meta = array();
+      }
     }
 
     return array_key_exists($key, $meta) ? $meta[$key] : parent::meta($key);

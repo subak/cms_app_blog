@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
 
 cp -v -a web/html/assets web/public
-entry_ids.sh | sed -e 's/^/\//' | sed -e 's/$/\//' | xargs -P 4 -n 1 router.rb | xargs -P 4 -n 1 build_entry.rb
 
-sitemap.rb > web/public/sitemap.xml
-echo web/public/sitemap.xml
+entry_ids.sh | sed -e 's/^/\//' | sed -e 's/$/\//' \
+  | xargs -P 4 -n 1 router.rb | xargs -P 4 -n 1 build_entry.rb
 
-page.php $(router.rb /) > web/public/index.html
-echo web/public/index.html
+build_page.sh $(router.rb /sitemap.xml)
+build_page.sh $(router.rb /)
 
 num_of_entries=$(entry_ids.sh | wc -l)
 num_of_pages=$((${num_of_entries} / 5))

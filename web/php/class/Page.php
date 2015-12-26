@@ -8,12 +8,12 @@ class Page
     $this->context = $context;
   }
 
-  public function query($key) {
-    static $query = null;
-    if (is_null($query)) {
-      parse_str($this->context['query'], $query);
+  public function context($key=null) {
+    if (is_null($key)) {
+      return $this->context;
+    } else {
+      return $this->context[$key];
     }
-    return $query[$key];
   }
 
   public function title() {
@@ -37,7 +37,7 @@ class Page
   }
 
   public function render() {
-    include $this->context['path'];
+    include $this->context('path');
   }
 
   public function each($array, $closure, $tag=null) {
@@ -86,8 +86,12 @@ class Page
     return $this->tag('a', $content, $option);
   }
 
+  public function url_for($path) {
+    return $this->meta('scheme').'://'.$this->meta('host').$path;
+  }
+
   public function rel($path) {
-    $level = substr_count($this->query('uri'), "/");
+    $level = substr_count($this->context('uri'), "/");
     $path = preg_replace('@^/@', '', $path);
     for ($i=1; $i < $level; $i++) {
       $path = '../'.$path;
@@ -95,13 +99,10 @@ class Page
     return $path;
   }
 
-  public function uri() {
-    return $this->query('uri');
-  }
-
   public function meta($key) {
     static $meta = null;
     if (is_null($meta)) {
+      //$meta = json_decode(`yaml2json web/site.yml`, true);
       $meta = yaml_parse_file('web/site.yml');
     }
 

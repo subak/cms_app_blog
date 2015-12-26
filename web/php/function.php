@@ -27,6 +27,10 @@ function entry_updated($id) {
   return new DateTime(`entry_updated.sh ${id}`);
 }
 
+function entry_ids() {
+  return array_values(array_filter(explode("\n", `entry_ids.sh`)));
+}
+
 function attr($array) {
   $attributes = array();
   foreach ($array as $name => $value) {
