@@ -1,4 +1,3 @@
 /.idea
 /*.iml
 /web/public/*
-!/web/public/.gitkeep

@@ -1,0 +1,7 @@
+listen: 80
+hosts:
+  "blog.tk84.net:80":
+    paths:
+      /:
+        file.dir: web/public
+        file.index: ['index.html']
