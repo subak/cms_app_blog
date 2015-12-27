@@ -31,12 +31,14 @@ RUN echo 'short_open_tag = On' >> /etc/php5/cli/php.ini
 ENV PATH /root/.composer/vendor/bin:$PATH
 
 # go
+ENV GOPATH /root/.go
+ENV PATH /root/.go/bin:$PATH
 RUN apt-get install -y golang \
  && go get github.com/ericchiang/pup
 
-ENV GOPATH /root/.go
-ENV PATH /root/.go/bin:$PATH
 
 RUN apt-get install -y jq
 
 COPY . .
+
+COPY web/bin/cms-entrypoint.sh /usr/local/bin/

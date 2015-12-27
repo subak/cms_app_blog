@@ -1,6 +1,6 @@
 listen: 8080
 hosts:
-  "alt.tk84.jp:8080":
+  default:
     paths:
       /assets:
         file.dir: web/html/assets

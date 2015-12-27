@@ -1,0 +1,20 @@
+dev.web:
+  build: .
+  volumes_from:
+    - repos_unison_1
+  working_dir: /repos/blog.tk84.net
+  ports:
+    - 8080:8080
+  entrypoint:
+    - h2o
+    - "-c"
+  command: web/dev.h2o.yml
+
+pro.web:
+  build: .
+  environment:
+    VIRTUAL_HOST: blog.tk84.net
+  entrypoint: cms-entrypoint.sh
+  command: web/pro.h2o.yml
+  ports:
+    - 80:80

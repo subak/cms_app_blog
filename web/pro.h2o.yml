@@ -1,7 +1,11 @@
 listen: 80
 hosts:
-  "blog.tk84.net:80":
+  default:
     paths:
       /:
         file.dir: web/public
         file.index: ['index.html']
+
+user: root
+access-log: /dev/stdout
+error-log: /dev/stderr

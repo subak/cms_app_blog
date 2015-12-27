@@ -7,8 +7,6 @@ require 'fileutils'
 context = ARGV.last
 id = JSON.parse(context)['id']
 
-# id = Hash[URI::decode_www_form(URI(uri).query)]['id']
-
 to_dir = "web/public/#{id}"
 from_dir = "content/entry/#{id}"
 to_file = "#{to_dir}/index.html"

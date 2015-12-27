@@ -3,16 +3,26 @@
 class Page
 {
   protected $context;
+  private $router;
 
   public function __construct($context) {
     $this->context = $context;
   }
 
+  private function router() {
+    $router = null;
+    if (is_null($router)) {
+      $router = new Router(yaml_parse_file('web/routes.yml'));
+    }
+    return $router;
+  }
+
   public function context($key=null) {
     if (is_null($key)) {
       return $this->context;
-    } else {
-      return $this->context[$key];
+    } else  {
+      return array_key_exists($key, $this->context) ?
+        $this->context[$key] : null;
     }
   }
 
@@ -79,6 +89,14 @@ class Page
 
   public function link_to($content, $path, $option=array()) {
     $option['href'] = $this->rel($path);
+
+    if ( $this->context('local') ) {
+      $context = $this->router()->detect($path);
+      if (array_key_exists('index', $context)) {
+        $option['href'] .= $context['index'];
+      }
+    }
+
     return $this->tag('a', $content, $option);
   }
 

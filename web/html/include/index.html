@@ -5,7 +5,7 @@
     <div class="post py3">
       <?= $this->tag('p', entry_created($id)->format('Y-m-d'), array('class' => 'post-meta')) ?>
 
-      <?= $this->link_to("", "/${id}/index.html", array('class' => 'post-link')) ?>
+      <?= $this->link_to("", "/${id}/", array('class' => 'post-link')) ?>
 
       <article class="post-content">
         <?= entry_summary($id, $this->context('uri')) ?>
@@ -18,7 +18,7 @@
   <div class="pagination clearfix mb1 mt4">
     <div class="left">
       <? if ($page=$this->prev_page()): ?>
-      <?= $this->link_to('Newer', $page == 1 ? '/index.html' : "/page/${page}/index.html", array('class' => 'pagination-item')) ?>
+      <?= $this->link_to('Newer', $page == 1 ? '/' : "/page/${page}/", array('class' => 'pagination-item')) ?>
       <? else: ?>
       <span class="pagination-item disabled">Newer</span>
       <? endif; ?>
@@ -26,7 +26,7 @@
 
     <div class="right">
       <? if ($page=$this->next_page()): ?>
-      <?= $this->link_to('Older', "/page/${page}/index.html", array('class' => 'pagination-item')) ?>
+      <?= $this->link_to('Older', "/page/${page}/", array('class' => 'pagination-item')) ?>
       <? else: ?>
       <span class="pagination-item disabled">Older</span>
       <? endif; ?>

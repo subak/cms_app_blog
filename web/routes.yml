@@ -3,14 +3,14 @@
   path: web/html/main.html
   class: Entry
   handler: page.php
-  builder: build_entry.rb
+  index: index.html
 
 -
   route: archives(/(?<yyyymm>[1-9][0-9]{4}([1][0-2]|[0][1-9])))?
   path: web/html/archive.html
   class: Archive
   handler: page.php
-  builder: build_entry.rb
+  index: index.html
 
 # トップページ
 -
@@ -19,7 +19,7 @@
   class: Index
   page: 1
   handler: page.php
-  builder: build_index.rb
+  index: index.html
 
 # ページ送り
 -
@@ -27,7 +27,7 @@
   path: web/html/main.html
   class: Index
   handler: page.php
-  builder: build_index.rb
+  index: index.html
 
 -
   route: ^/sitemap.xml$
