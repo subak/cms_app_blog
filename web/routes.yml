@@ -9,7 +9,7 @@
   route: archives(/(?<yyyymm>[1-9][0-9]{4}([1][0-2]|[0][1-9])))?
   path: web/html/archive.html
   class: Archive
-  handler: archive.php
+  handler: page.php
   builder: build_entry.rb
 
 # トップページ
@@ -33,3 +33,4 @@
   route: ^/sitemap.xml$
   path: web/html/sitemap.xml
   class: Page
+  handler: page.php

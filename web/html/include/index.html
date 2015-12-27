@@ -8,7 +8,7 @@
       <?= $this->link_to("", "/${id}/index.html", array('class' => 'post-link')) ?>
 
       <article class="post-content">
-        <?= entry_summary($id) ?>
+        <?= entry_summary($id, $this->context('uri')) ?>
       </article>
     </div>
 

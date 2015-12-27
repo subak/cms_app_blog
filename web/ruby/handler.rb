@@ -1,8 +1,5 @@
 require 'web/ruby/router.rb'
-#require 'web/routes.rb'
 eval(`routes.rb`)
-#eval('class Hoge; end')
-
 
 class Handler
   @@router = nil
@@ -18,19 +15,11 @@ class Handler
               "content-type" => "text/html; charset=utf-8",
           },
           [
-              `page.php '#{JSON.generate(context)}'`
+              `#{context['handler']} '#{JSON.generate(context)}'`
           ]
       ]
     else
-      [
-          404,
-          {
-              "content-type" => "text/plain; charset=utf-8",
-          },
-          [
-              'not found'
-          ]
-      ]
+      [399, {}, []]
     end
   end
 end

@@ -48,7 +48,13 @@ function entry($id) {
     ' | sed -e "s/<p>&lt;\?/<?/" | sed -e "s/\?&gt;<\/p>/?>/"');
 }
 
-function entry_summary($id) {
+function entry_summary($id, $uri, $num=3) {
+  // uriを受け取らないくてもいいようにクラスにしまったほうがいい
+  $level = substr_count($uri, "/");
+  $dir = "${id}\\/";
+  if ($level) {
+    $dir = str_repeat('..\/', $level).$dir;
+  }
   $path = entry_path($id);
-  return `pandoc -f markdown_github -t json ${path} | jq '[.[0],.[1][0:3]]' | pandoc -f json -t html5`;
+  return `pandoc -f markdown_github -t json ${path} | jq '[.[0],.[1][0:${num}]]' | sed -e 's/"\([^/]*\)\.\(jpg\)"/"${dir}\\1.\\2"/' | pandoc -f json -t html5`;
 }
