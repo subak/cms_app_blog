@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-find content/entry/* -maxdepth 0 | xargs basename | sort
+find content/entry/* -maxdepth 0 -exec basename {} \; | sort

@@ -1,6 +1,6 @@
 listen: 8080
 hosts:
-  "127.0.0.1.xip.io:8080":
+  "alt.tk84.jp:8080":
     paths:
       /assets:
         file.dir: web/html/assets

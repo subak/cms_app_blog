@@ -17,7 +17,7 @@ class Page
   }
 
   public function title() {
-    return $this->meta('title');
+    return call_user_func(array($this, 'Page::meta'), 'title');
   }
 
   public function site_name() {
@@ -30,10 +30,6 @@ class Page
 
   protected function wrap($tag, $text) {
     return "<$tag>".$text."</$tag>";
-  }
-
-  public function include($path) {
-    include $path;
   }
 
   public function render() {

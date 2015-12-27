@@ -1,11 +1,7 @@
 class Router
   def initialize(routes)
-    # @routes = routes
     @routes = routes.map do |route|
-      match = /\?\<([^>]+)\>/.match(route['route'])
-      if match
-        route[:_names] = match.to_a.drop(1)
-      end
+      route[:_names] = route['route'].scan(/\?\<([^>]+)\>/).flatten
       route
     end
   end
@@ -20,23 +16,22 @@ class Router
     return nil unless match
 
     res = {}
-    if route[:_names]
-      route[:_names].each do |name|
-        name = name.to_sym
 
-        begin
-          match[name]
-        rescue
-        else
-          res[name] = match[name]
-        end
+    route[:_names].each do |name|
+      name = name.to_sym
+
+      begin
+        match[name]
+      rescue
+      else
+        res[name.to_s] = match[name]
       end
     end
 
     route = route.dup
     route.delete(:_names)
 
-    res['uri'] = uri
+    res['uri'] = uri unless res['uri']
 
     res.merge(route)
   end

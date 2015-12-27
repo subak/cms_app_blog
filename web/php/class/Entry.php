@@ -12,13 +12,14 @@ class Entry extends Page
   public function title() {
     static $title = null;
     if (is_null($title)) {
-      $title = entry_title($this->id);
+      $title = trim(entry_title($this->id));
     }
-    return join(" | ", [parent::title(), $title]);
+    return join(" | ", [$title, parent::title()]);
   }
 
   public function content() {
     include 'web/html/include/entry.html';
+    return "";
   }
 
   public function meta($key) {

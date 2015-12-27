@@ -1,5 +1,5 @@
 -
-  route: ^/(?<id>[\w\W\d]{4})/(?:index.html)?$
+  route: ^(?<uri>/(?<id>[\w\W\d]{4})/)(?:index.html)?$
   path: web/html/main.html
   class: Entry
   handler: page.php
@@ -14,7 +14,7 @@
 
 # トップページ
 -
-  route: ^(/index\.html|/)$
+  route: ^(?<uri>/)(?:index\.html)?$
   path: web/html/main.html
   class: Index
   page: 1
