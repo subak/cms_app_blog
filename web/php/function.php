@@ -50,7 +50,7 @@ function entry($id) {
 
 function entry_summary($id, $uri, $num=3) {
   // uriを受け取らないくてもいいようにクラスにしまったほうがいい
-  $level = substr_count($uri, "/");
+  $level = substr_count($uri, "/") - 1;
   $dir = "${id}\\/";
   if ($level) {
     $dir = str_repeat('..\/', $level).$dir;
