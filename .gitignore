@@ -1,4 +1,5 @@
+._.DS_Store
 /.idea
 /*.iml
 /web/public/*
-!/web/public/.gitkeep
+!/web/public/robots.txt
