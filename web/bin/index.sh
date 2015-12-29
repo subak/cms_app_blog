@@ -2,6 +2,8 @@
 
 # yamlで出力するオプションを備える
 
+. web/bin/path.sh
+
 set -ue
 
 target=${1:-title}
