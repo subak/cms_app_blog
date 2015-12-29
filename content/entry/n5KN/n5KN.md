@@ -1,7 +1,5 @@
 # ubuntu:wily に php7.0 をインストール
 
-![](443792.jpg)
-
 `apt-add-repository`で`ppa:ondrej/php`を追加。  
 `apt-add-repository`が無い場合には`apt-get install -y software-properties-common`しておく必要があります。
 
