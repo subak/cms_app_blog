@@ -11,7 +11,6 @@ spl_autoload_register(function ($className)
   return true;
 });
 
-$page= new $context['class']($context);
-$page->render();
+(new $context['class']($context))->render();
 
 exit(0);
