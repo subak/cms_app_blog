@@ -6,7 +6,7 @@ class Handler
 
   def call(env)
     @@router ||= Router.new(Routes.routes)
-    context = @@router.select(env['PATH_INFO'])
+    context = @@router.detect(env['PATH_INFO'])
 
     if (context)
       [

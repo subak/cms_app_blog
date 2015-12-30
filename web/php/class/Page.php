@@ -3,7 +3,6 @@
 class Page
 {
   protected $context;
-  private $router;
 
   public function __construct($context) {
     $this->context = $context;
@@ -43,7 +42,7 @@ class Page
   }
 
   public function render() {
-    include $this->context('path');
+    include $this->context('view');
   }
 
   public function each($array, $closure, $tag=null) {

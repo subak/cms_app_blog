@@ -1,16 +1,16 @@
 class Router
   def initialize(routes)
     @routes = routes.map do |route|
-      route[:_names] = route['route'].scan(/\?\<([^>]+)\>/).flatten
+      route[:_names] = route['match'].scan(/\?\<([^>]+)\>/).flatten
       route
     end
   end
 
-  def select(uri)
+  def detect(path)
     match = nil
     route = @routes.find do |route|
-      pattern = Regexp.new(route['route'])
-      match = pattern.match(uri)
+      pattern = Regexp.new(route['match'])
+      match = pattern.match(path)
     end
 
     return nil unless match
@@ -31,7 +31,7 @@ class Router
     route = route.dup
     route.delete(:_names)
 
-    res['uri'] = uri unless res['uri']
+    res['uri'] = path unless res['uri']
 
     res.merge(route)
   end

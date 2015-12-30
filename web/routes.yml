@@ -1,21 +1,21 @@
 -
-  route: ^(?<uri>/(?<id>[\w\W\d]{4})/)(?:index.html)?$
-  path: web/html/main.html
+  match: ^(?<uri>/(?<id>[\w\W\d]{4})/)(?:index.html)?$
+  view: web/html/main.html
   class: Entry
   handler: page.php
   index: index.html
 
 -
-  route: archives(/(?<yyyymm>[1-9][0-9]{4}([1][0-2]|[0][1-9])))?
-  path: web/html/archive.html
+  match: archives(/(?<yyyymm>[1-9][0-9]{4}([1][0-2]|[0][1-9])))?
+  view: web/html/archive.html
   class: Archive
   handler: page.php
   index: index.html
 
 # トップページ
 -
-  route: ^(?<uri>/)(?:index\.html)?$
-  path: web/html/main.html
+  match: ^(?<uri>/)(?:index\.html)?$
+  view: web/html/main.html
   class: Index
   page: 1
   handler: page.php
@@ -23,14 +23,14 @@
 
 # ページ送り
 -
-  route: ^/page/(?<page>[\d]+)/(?:index.html)?$
-  path: web/html/main.html
+  match: ^/page/(?<page>[\d]+)/(?:index.html)?$
+  view: web/html/main.html
   class: Index
   handler: page.php
   index: index.html
 
 -
-  route: ^/sitemap.xml$
-  path: web/html/sitemap.xml
+  match: ^/sitemap.xml$
+  view: web/html/sitemap.xml
   class: Page
   handler: page.php
