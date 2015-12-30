@@ -23,7 +23,7 @@
 
 # ページ送り
 -
-  match: ^/page/(?<page>[\d]+)/(?:index.html)?$
+  match: ^(?<uri>/page/(?<page>[\d]+)/)(?:index\.html)?$
   view: web/html/main.html
   class: Index
   handler: page.php
