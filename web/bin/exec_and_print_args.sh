@@ -4,4 +4,4 @@ set -eu
 
 arg=${@:2:($#-1)}
 
-echo $("$1" "$arg") "$arg"
+echo -e $("$1" "$arg")"\t""$arg"

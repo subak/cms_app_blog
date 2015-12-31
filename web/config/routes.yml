@@ -1,36 +1,36 @@
 -
   match: ^(?<uri>/(?<id>[\w\W\d]{4})/)(?:index.html)?$
-  view: web/html/main.html
-  class: Entry
   handler: page.php
+  view: views/main.html
+  helper: Entry
   index: index.html
 
 -
   match: archives(/(?<yyyymm>[1-9][0-9]{4}([1][0-2]|[0][1-9])))?
-  view: web/html/archive.html
-  class: Archive
   handler: page.php
+  view: views/archive.html
+  helper: Archive
   index: index.html
 
 # トップページ
 -
   match: ^(?<uri>/)(?:index\.html)?$
-  view: web/html/main.html
-  class: Index
-  page: 1
   handler: page.php
+  view: views/main.html
+  helper: Index
+  page: 1
   index: index.html
 
 # ページ送り
 -
   match: ^(?<uri>/page/(?<page>[\d]+)/)(?:index\.html)?$
-  view: web/html/main.html
-  class: Index
   handler: page.php
+  view: views/main.html
+  helper: Index
   index: index.html
 
 -
   match: ^/sitemap.xml$
-  view: web/html/sitemap.xml
-  class: Page
   handler: page.php
+  view: views/sitemap.xml
+  helper: Page

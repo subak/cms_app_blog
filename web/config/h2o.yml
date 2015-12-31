@@ -2,8 +2,7 @@ listen: 8080
 hosts:
   default:
     paths:
-      /assets:
-        file.dir: web/html/assets
       /:
         mruby.handler-file: web/ruby/handler.rb
+        file.dir: web/public
         file.dir: content/entry

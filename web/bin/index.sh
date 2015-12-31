@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 
-# yamlで出力するオプションを備える
-
-. web/bin/path.sh
-
 set -ue
+. env.sh
 
 target=${1:-title}
 
-entry_ids.sh | xargs -n 1 -P4 exec_and_print_args.sh entry_${target}.sh | awk '{print $2,$1}'
+entry_ids.sh \
+  | xargs -P0 -I@ exec_and_print_args.sh entry_${target}.sh @ \
+  | awk -F'\t' '{print $2,$1}'

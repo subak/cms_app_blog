@@ -5,7 +5,7 @@ require 'yaml'
 puts <<"EOF"
 class Routes
   def self.routes
-    #{YAML.load_file('web/routes.yml').inspect}
+    #{YAML.load_file('web/config/routes.yml').inspect}
   end
 end
 EOF

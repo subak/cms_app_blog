@@ -18,7 +18,7 @@ class Entry extends Page
   }
 
   public function content() {
-    include 'web/html/include/entry.html';
+    include 'views/include/entry.html';
     return "";
   }
 
@@ -26,7 +26,6 @@ class Entry extends Page
     static $meta = null;
     if (is_null($meta)) {
       $path = entry_path($this->id, ".yml");
-      //$meta = json_decode(`yaml2json ${path}`, true);
       if (file_exists($path)) {
         $meta = yaml_parse_file(entry_path($this->id, ".yml"));
       } else {

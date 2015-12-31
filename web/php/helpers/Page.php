@@ -11,7 +11,7 @@ class Page
   private function router() {
     $router = null;
     if (is_null($router)) {
-      $router = new Router(yaml_parse_file('web/routes.yml'));
+      $router = new Router(yaml_parse_file('web/config/routes.yml'));
     }
     return $router;
   }
@@ -115,8 +115,7 @@ class Page
   public function meta($key) {
     static $meta = null;
     if (is_null($meta)) {
-      //$meta = json_decode(`yaml2json web/site.yml`, true);
-      $meta = yaml_parse_file('web/site.yml');
+      $meta = yaml_parse_file('content/web.yml');
     }
 
     return $meta[$key];

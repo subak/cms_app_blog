@@ -36,7 +36,7 @@ class Index extends Page
   }
 
   public function content() {
-    include 'web/html/include/index.html';
+    include 'views/include/index.html';
   }
 
   public function entries() {

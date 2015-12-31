@@ -1,7 +1,4 @@
 /.idea
 /*.iml
-/web/public/*
 /.dockerignore
 /.gitignore
-/.docker-compose.yml
-/Dockerfile

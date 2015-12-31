@@ -2,5 +2,3 @@
 ._.DS_Store
 /.idea
 /*.iml
-/web/public/*
-!/web/public/robots.txt
