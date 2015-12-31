@@ -8,7 +8,7 @@ MAX_PROCS=${MAX_PROCS:-4}
 
 filter=$([ "${local}" == local ] && echo "sed -e 's/}$/"',"local":true}'"/'" || echo 'cat')
 
-cp -rv web/public ${out_dir}
+cp -rv web/public $([ -e "${out_dir}" ] && dirname "${out_dir}" || echo "${out_dir}")
 
 entry_ids.sh | xargs -P0 -I@ router.rb /@/ \
   | tr '\n' '\0' | xargs -0 -P0 -I@ build_entry.sh @ ${out_dir}
