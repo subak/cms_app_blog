@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 set -eu
-. env.sh
 
 out_dir=${1}
 local=${2:-local}
+MAX_PROCS=${MAX_PROCS:-4}
 
 filter=$([ "${local}" == local ] && echo "sed -e 's/}$/"',"local":true}'"/'" || echo 'cat')
 
@@ -23,4 +23,4 @@ for ((i=2; i<=$num_of_pages; i++)); do
   echo ${i}
 done \
   | xargs -P0 -I@ router.rb /page/@/ | eval "${filter}" \
-  | tr '\n' '\0' | xargs -0 -P${CORE} -I@ build_page.sh @ ${out_dir}
+  | tr '\n' '\0' | xargs -0 -P${MAX_PROCS} -I@ build_page.sh @ ${out_dir}

@@ -52,9 +52,9 @@ function entry_summary($id, $uri, $num=3) {
   // uriを受け取らないくてもいいようにクラスにしまったほうがいい
   $level = substr_count($uri, "/") - 1;
   $dir = "${id}\\/";
-  if ($level) {
-    $dir = str_repeat('..\/', $level).$dir;
-  }
+  $dir = str_repeat('..\/', $level).$dir;
   $path = entry_path($id);
-  return `pandoc -f markdown_github -t json ${path} | jq '[.[0],.[1][0:${num}]]' | sed -e 's/"\([^/]*\)\.\(jpg\)"/"${dir}\\1.\\2"/' | pandoc -f json -t html5`;
+  $assets = 'jpg|png';
+
+  return `pandoc -f markdown_github -t json ${path} | jq '[.[0],.[1][0:${num}]]' | sed -r 's/"([^/]*)\.(${assets})"/"${dir}\\1.\\2"/' | pandoc -f json -t html5`;
 }

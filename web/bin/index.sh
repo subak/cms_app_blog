@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 set -ue
-. env.sh
 
 target=${1:-title}
 

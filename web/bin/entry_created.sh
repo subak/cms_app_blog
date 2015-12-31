@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 set -u
-. env.sh
 
 id=$1
 path=content/entry/${id}/${id}
