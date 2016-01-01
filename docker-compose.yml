@@ -1,0 +1,13 @@
+web:
+  image: subak/cms:latest
+  environment:
+    PATH: "/repos/blog.tk84.net/web/bin:$PATH"
+  working_dir: "/repos/blog.tk84.net"
+  volumes_from:
+    - dev15core_unison_1
+  ports:
+    - "8080:8080"
+  entrypoint: h2o
+  command:
+    - '-c'
+    - 'web/config/h2o.yml'

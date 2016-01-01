@@ -6,3 +6,7 @@ hosts:
         mruby.handler-file: web/ruby/handler.rb
         file.dir: web/public
         file.dir: content/entry
+
+user: root
+access-log: /dev/stdout
+error-log: /dev/stderr
