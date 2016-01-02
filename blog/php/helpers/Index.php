@@ -35,9 +35,10 @@ class Index extends Page
     return $num;
   }
 
-  public function content() {
-    include 'views/include/index.html';
-  }
+//  public function content() {
+//    include 'include/index.html';
+//    return null;
+//  }
 
   public function entries() {
     return array_map(function ($id) {

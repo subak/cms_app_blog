@@ -17,10 +17,10 @@ class Entry extends Page
     return join(" | ", [$title, parent::title()]);
   }
 
-  public function content() {
-    include 'views/include/entry.html';
-    return "";
-  }
+//  public function content() {
+//    include 'include/entry.html';
+//    return null;
+//  }
 
   public function meta($key) {
     static $meta = null;

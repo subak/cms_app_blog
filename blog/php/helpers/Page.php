@@ -8,10 +8,24 @@ class Page
     $this->context = $context;
   }
 
+  public function config($key=null) {
+    $config = null;
+    if (is_null($config)) {
+      $config = yaml_parse_file(getenv('APP').'/config/app.yml');
+    }
+    if (is_null($key)) {
+      return $config;
+    } else if (array_key_exists($key, $config)) {
+      return $config[$key];
+    } else {
+      return null;
+    }
+  }
+
   private function router() {
     $router = null;
     if (is_null($router)) {
-      $router = new Router(yaml_parse_file('web/config/routes.yml'));
+      $router = new Router(yaml_parse_file(getenv('APP').'/config/routes.yml'));
     }
     return $router;
   }
@@ -33,8 +47,16 @@ class Page
     return self::meta('title');
   }
 
-  public function content() {
-    return "";
+  public function content($dir=null) {
+    if (is_null($dir)) {
+      $dir = $this->config('content_include_dir');
+    }
+    $this->context('uri');
+    $path = $dir.$this->context("uri").$this->context("index");
+    if (file_exists($path)) {
+      include $path;
+    }
+    return null;
   }
 
   protected function wrap($tag, $text) {
@@ -42,7 +64,7 @@ class Page
   }
 
   public function render() {
-    include $this->context('view');
+    include preg_replace('@^/@', '', $this->context('view'));
   }
 
   public function each($array, $closure, $tag=null) {

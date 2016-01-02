@@ -1,0 +1,50 @@
+- match: ^/env$
+  body: |
+    #{JSON.generate(env)}
+
+# Entry
+-
+  match: '^(?<uri>/(?<id>[\w\W\d]{4})/)(?:index.html)?$'
+  handler: page.php
+  view: main.html
+  main: entry.html
+  helper: Entry
+  index: index.html
+
+# Archive
+-
+  match: '^(?<uri>/archives(?:/(?<yyyymm>[1-9][0-9]{4}(?:[1][0-2]|[0][1-9]))/)?)(?:index.html)?$'
+  handler: page.php
+  view: main.html
+  helper: Archive
+  index: index.html
+
+# Top
+-
+  match: '^(?<uri>/)(?:index\.html)?$'
+  handler: page.php
+  view: main.html
+  helper: Index
+  page: 1
+  index: index.html
+
+# Paginated Index
+-
+  match: '^(?<uri>/page/(?<page>[\d]+)/)(?:index\.html)?$'
+  handler: page.php
+  view: main.html
+  helper: Index
+  index: index.html
+
+# Directory
+-
+  match: '^(?<view>(?<uri>(/[^/]+)*/)(?:index\.html))$'
+  handler: page.php
+  helper: Page
+  index: index.html
+
+# Index
+-
+  match: '^(?<view>(?<uri>(/[^/]+)*/)[^/]+)$'
+  handler: page.php
+  helper: Page

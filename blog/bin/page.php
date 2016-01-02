@@ -1,8 +1,9 @@
 #!/usr/bin/env php
 <?php
-require_once 'web/php/function.php';
 
-set_include_path(get_include_path().PATH_SEPARATOR.'web/php');
+set_include_path(get_include_path().PATH_SEPARATOR.getenv('APP').'/php/views');
+
+require_once getenv('APP').'/php/function.php';
 
 $context = json_decode(end($_SERVER["argv"]), true);
 reset($_SERVER["argv"]);
@@ -10,7 +11,7 @@ reset($_SERVER["argv"]);
 spl_autoload_register(function ($class_name)
 {
   foreach (['helpers', 'class'] as $dir_name) {
-    $path = "web/php/${dir_name}/${class_name}.php";
+    $path = getenv('APP')."/php/${dir_name}/${class_name}.php";
     if (file_exists($path)) {
       require_once $path;
       return true;
