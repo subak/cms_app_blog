@@ -1,12 +1,20 @@
 <?php
 
+namespace Helpers;
+
 class Entry extends Page
 {
+  use Traits\Entry;
+
   private $id;
 
   public function __construct($context) {
     parent::__construct($context);
     $this->id = $this->context('id');
+  }
+
+  public function id() {
+    return $this->id;
   }
 
   public function title() {
@@ -16,11 +24,6 @@ class Entry extends Page
     }
     return join(" | ", [$title, parent::title()]);
   }
-
-//  public function content() {
-//    include 'include/entry.html';
-//    return null;
-//  }
 
   public function meta($key) {
     static $meta = null;

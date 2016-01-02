@@ -6,10 +6,10 @@
  * Time: 3:54
  */
 
+namespace Helpers;
+
 class Index extends Page
 {
-  const NUM_OF_ENTRIES = 5;
-
   public function __construct($context) {
     parent::__construct($context);
   }
@@ -17,7 +17,7 @@ class Index extends Page
   public function ids() {
     static $ids = null;
     if (is_null($ids)) {
-      $num = self::NUM_OF_ENTRIES;
+      $num = $this->config('num_of_entries_per_page');
       $page = intval($this->context('page'));
       $start = ($page - 1) * $num + 1;
       $end = $page * $num;
@@ -35,17 +35,6 @@ class Index extends Page
     return $num;
   }
 
-//  public function content() {
-//    include 'include/index.html';
-//    return null;
-//  }
-
-  public function entries() {
-    return array_map(function ($id) {
-      return $this->entry($id);
-    }, $this->ids);
-  }
-
   public function entry($id) {
     $path = entry_path($id);
     return `pandoc -f markdown_github -t json ${path} | jq '[.[0],.[1][0:3]]' | pandoc -f json -t html5`;
@@ -58,6 +47,6 @@ class Index extends Page
 
   public function next_page() {
     $page = intval($this->context('page'));
-    return ($page * self::NUM_OF_ENTRIES) >= $this->num_of_entries() ? null : $page + 1;
+    return ($page * $this->config('num_of_entries_per_page')) >= $this->num_of_entries() ? null : $page + 1;
   }
 }

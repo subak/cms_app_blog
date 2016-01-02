@@ -7,6 +7,14 @@
  */
 
 /**
+ * @param $uri
+ * @return bool
+ */
+function is_uri_dir($uri) {
+  return substr($uri, -1) === '/';
+}
+
+/**
  * @param $id
  * @param string $ext
  * @return string
@@ -29,18 +37,6 @@ function entry_updated($id) {
 
 function entry_ids() {
   return array_values(array_filter(explode("\n", `entry_ids.sh`)));
-}
-
-function attr($array) {
-  $attributes = array();
-  foreach ($array as $name => $value) {
-    if (is_array($value)) {
-      $value = join(" ", $value);
-    }
-    $attributes[] = "${name}=\"${value}\"";
-  }
-  $attr = empty($attributes) ? "" : " ".join(" ", $attributes);
-  return $attr;
 }
 
 function entry($id) {

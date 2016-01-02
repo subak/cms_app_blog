@@ -9,7 +9,6 @@
   view: main.html
   main: entry.html
   helper: Entry
-  index: index.html
 
 # Archive
 -
@@ -17,31 +16,29 @@
   handler: page.php
   view: main.html
   helper: Archive
-  index: index.html
 
 # Top
 -
   match: '^(?<uri>/)(?:index\.html)?$'
   handler: page.php
   view: main.html
+  main: index.html
   helper: Index
   page: 1
-  index: index.html
 
 # Paginated Index
 -
   match: '^(?<uri>/page/(?<page>[\d]+)/)(?:index\.html)?$'
   handler: page.php
   view: main.html
+  main: index.html
   helper: Index
-  index: index.html
 
 # Directory
 -
   match: '^(?<view>(?<uri>(/[^/]+)*/)(?:index\.html))$'
   handler: page.php
   helper: Page
-  index: index.html
 
 # Index
 -
