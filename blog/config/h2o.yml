@@ -1,0 +1,11 @@
+listen: 8080
+hosts:
+  default:
+    paths:
+      /:
+        file.dir: blog/public
+        mruby.handler-file: blog/ruby/handler.rb
+        file.dir: content/entry
+
+access-log: /dev/stdout
+error-log: /dev/stderr
