@@ -24,8 +24,20 @@ trait Entry {
     return $this->load_content($path, $this->context('uri'), $uri, $num_of_elements_in_summary);
   }
 
+  public function entry_title($id) {
+    return `entry_title.sh ${id}`;
+  }
+
   public static function entry_created($id) {
     return new \DateTime(`entry_created.sh ${id}`);
+  }
+
+  public static function entry_updated($id) {
+    return new \DateTime(`entry_updated.sh ${id}`);
+  }
+
+  public static function entry_ids() {
+    return array_values(array_filter(explode("\n", `entry_ids.sh`)));
   }
 
   public function created($id=null) {
@@ -35,10 +47,10 @@ trait Entry {
     return self::entry_created($id);
   }
 
-  function entry_updated($id=null) {
+  public function updated($id=null) {
     if (is_null($id)) {
       $id = $this->id();
     }
-    return new DateTime(`entry_updated.sh ${id}`);
+    return self::entry_updated($id);
   }
 }

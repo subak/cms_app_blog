@@ -20,7 +20,7 @@ class Entry extends Page
   public function title() {
     static $title = null;
     if (is_null($title)) {
-      $title = trim(entry_title($this->id));
+      $title = trim(self::entry_title($this->id()));
     }
     return join(" | ", [$title, parent::title()]);
   }
