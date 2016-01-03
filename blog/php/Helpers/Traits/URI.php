@@ -9,7 +9,7 @@ trait URI {
 
   public function rel($path) {
     $level = substr_count($this->context('uri'), "/");
-    $path = preg_replace('@^/@', '', $path);
+    $path = preg_replace('@^/@', './', $path);
     for ($i=1; $i < $level; $i++) {
       $path = '../'.$path;
     }
