@@ -34,18 +34,22 @@
   helper: Index
 
 -
-  match: 'test'
-  status: 404
+  match: '\.md|\.yml'
+  status: 403
+  body: forbidden
 
 # Directory
 -
   match: '^(?<view>(?<uri>(/[^/]+)*/)(?:index\.html))$'
   handler: page.php
   helper: Page
+  condition: |
+    File.exists?(File.join(ENV['APP'],'php/views',context['view']))
 
 # Index
 -
   match: '^(?<view>(?<uri>(/[^/]+)*/[^/]+))$'
   handler: page.php
   helper: Page
-  name: Index
+  condition: |
+    File.exists?(File.join(ENV['APP'],'php/views',context['view']))

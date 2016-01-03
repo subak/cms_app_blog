@@ -7,11 +7,20 @@ class Handler
   def call(env)
     @@router ||= Router.new(Routes.routes)
     context = @@router.detect(env['PATH_INFO'])
+    condition = if context.nil?
+                  false
+                elsif context['condition']
+                  eval(context['condition'])
+                else
+                  true
+                end
 
-    if (context)
+    if (condition)
       status = context['status'] || 200
       content_type = context['content_type'] || 'text/html; charset=utf-8'
-      body = context['body'] && eval("<<EOF\n#{context['body']}\nEOF\n") || `#{context['handler']} '#{JSON.generate(context)}'`
+      body = if context['body']
+               eval("<<EOF\n#{context['body']}\nEOF\n")
+             else `#{context['handler']} '#{JSON.generate(context)}'` end
       [
           status,
           {
