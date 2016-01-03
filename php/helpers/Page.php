@@ -13,7 +13,7 @@ class Page
   }
 
   public function title() {
-    return call_user_func(array($this, 'Page::meta'), 'title');
+    return call_user_func(array($this, '\Helpers\Page::meta'), 'title');
   }
 
   public function site_name() {

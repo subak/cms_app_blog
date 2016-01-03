@@ -32,7 +32,7 @@ class Router
     route.delete(:_names)
 
     res['uri'] = path unless res['uri']
-    res['is_dir'] = res[-1] == '/'
+    res['status'] = 200 unless res['status']
 
     res.merge(route)
   end
