@@ -1,5 +1,5 @@
 <div class="post-header mb2">
-  <?= $this->tag('span', entry_created($this->id())->format('Y-m-d'), ['class' => 'post-meta']) ?>
+  <?= $this->tag('span', $this->entry_created()->format('Y-m-d'), ['class' => 'post-meta']) ?>
   <br>
 
 
@@ -11,7 +11,7 @@
 </div>
 
 <article class="post-content">
-  <?= entry($this->id()) ?>
+  <?= $this->entry() ?>
 </article>
 
 <script>

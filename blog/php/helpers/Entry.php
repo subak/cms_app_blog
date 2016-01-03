@@ -4,7 +4,7 @@ namespace Helpers;
 
 class Entry extends Page
 {
-  use Traits\Entry;
+  use Traits\Content, Traits\Entry;
 
   private $id;
 
@@ -28,9 +28,10 @@ class Entry extends Page
   public function meta($key) {
     static $meta = null;
     if (is_null($meta)) {
-      $path = entry_path($this->id, ".yml");
+      $id = $this->id();
+      $path = "content/entry/${id}/${id}.yml";
       if (file_exists($path)) {
-        $meta = yaml_parse_file(entry_path($this->id, ".yml"));
+        $meta = yaml_parse_file($path);
       } else {
         $meta = array();
       }
@@ -38,4 +39,5 @@ class Entry extends Page
 
     return array_key_exists($key, $meta) ? $meta[$key] : parent::meta($key);
   }
+
 }

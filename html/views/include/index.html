@@ -3,12 +3,12 @@
     <?= $this->each($this->ids(), function ($i, $id) { ?>
 
     <div class="post py3">
-      <?= $this->tag('p', entry_created($id)->format('Y-m-d'), ['class' => 'post-meta']) ?>
+      <?= $this->tag('p', $this->created($id)->format('Y-m-d'), ['class' => 'post-meta']) ?>
 
       <?= $this->link_to("", "/${id}/", ['class' => 'post-link']) ?>
 
       <article class="post-content">
-        <?= entry_summary($id, $this->context('uri')) ?>
+        <?= $this->entry($id, true) ?>
       </article>
     </div>
 

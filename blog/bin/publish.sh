@@ -6,7 +6,9 @@ out_dir=${1}
 local=${2:-local}
 MAX_PROCS=${MAX_PROCS:-4}
 
-filter=$([ "${local}" == local ] && echo "sed -e 's/}$/"',"local":true}'"/'" || echo 'cat')
+local_context=$([ "${local}" == local ] && echo '+ {"local": true}' || echo '')
+
+filter="jq -c '. ${local_context}'"
 
 cp -rv ${APP}/public $([ -e "${out_dir}" ] && dirname "${out_dir}" || echo "${out_dir}")
 
