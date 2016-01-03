@@ -1,7 +1,15 @@
 blog:
-  image: subak/cms:pro
+  image: subak/cms:latest
   environment:
+    PATH: '/repos/blog.tk84.net/blog/bin:/root/.composer/vendor/bin:/root/.go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
     APP: blog
-    ID_RSA:
-    CONTENT_REPO: 'git@bitbucket.org:subak/blog.tk84.net.git'
-    ENGINE_REPO: 'git@bitbucket.org:subak/cms-engine-blog.git'
+    MAX_PROCS: '0'
+  working_dir: '/repos/blog.tk84.net'
+  volumes_from:
+    - dev15core_unison_1
+  ports:
+    - 8080:8080
+  entrypoint: h2o
+  command:
+    - '-c'
+    - 'blog/config/h2o.yml'
