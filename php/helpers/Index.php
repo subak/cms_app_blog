@@ -10,6 +10,8 @@ namespace Helpers;
 
 class Index extends Page
 {
+  use Traits\Content, Traits\Entry;
+
   public function __construct($context) {
     parent::__construct($context);
   }
@@ -33,11 +35,6 @@ class Index extends Page
       $num = intval(`entry_ids.sh | wc -l`);
     }
     return $num;
-  }
-
-  public function entry($id) {
-    $path = entry_path($id);
-    return `pandoc -f markdown_github -t json ${path} | jq '[.[0],.[1][0:3]]' | pandoc -f json -t html5`;
   }
 
   public function prev_page() {
