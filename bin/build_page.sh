@@ -13,9 +13,9 @@ handler=$(echo $1 | jq -r .handler)
 
 to_file=${out_dir}${uri}
 to_dir=$(echo ${to_file} | sed -e 's/\/[^/]*$//')
-echo ${to_file} | egrep '/$' && to_file=${to_dir}/index.html
+echo ${to_file} | egrep '/$' >/dev/null && to_file=${to_dir}/index.html
 
-mkdir -pv ${to_dir}
+[ -e ${to_dir} ] || mkdir -pv ${to_dir}
 
 eval "${handler}" "'"${param}"'" > ${to_file}
 echo ${to_file}
