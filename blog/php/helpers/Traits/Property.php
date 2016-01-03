@@ -30,7 +30,7 @@ trait Property {
   private function router() {
     static $router = null;
     if (is_null($router)) {
-      $router = new Router(yaml_parse_file(getenv('APP').'/config/routes.yml'));
+      $router = new \Router(yaml_parse_file(getenv('APP').'/config/routes.yml'));
     }
     return $router;
   }
