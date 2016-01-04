@@ -8,11 +8,10 @@ trait Entry {
       $id = $this->id();
     }
 
-    $uri = "/${id}/";
-    $path = "content/entry/${id}/${id}";
+    $file_name = "content/entry/${id}/${id}";
 
     if ($out_dir = $this->context('out_dir')) {
-      $msg = $this->build_content($path, $uri, $out_dir);
+      $msg = $this->build_content_resource($file_name, $out_dir);
       fputs(STDERR, $msg);
     }
 
@@ -21,7 +20,7 @@ trait Entry {
       $num_of_elements_in_summary = $this->config('num_of_elements_in_summary');
     }
 
-    return $this->load_content($path, $this->context('uri'), $uri, $num_of_elements_in_summary);
+    return $this->load_content($file_name, $this->context('uri'), $num_of_elements_in_summary);
   }
 
   public function entry_title($id) {
