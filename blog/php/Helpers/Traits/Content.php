@@ -35,7 +35,8 @@ EOF;
     $info = pathinfo($file_name);
     switch ($info['extension']) {
       case 'md':
-        return `pandoc -f markdown_github+footnotes+inline_notes -t json ${file_name} ${filter} | pandoc -f json -t html5`;
+        $format = $this->config('pandoc_format_markdown');
+        return `pandoc -f ${format} -t json ${file_name} ${filter} | pandoc -f json -t html5`;
       case 'asciidoc':
         return 'asciidoc';
       default:
