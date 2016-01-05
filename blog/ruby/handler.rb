@@ -1,11 +1,10 @@
 require ENV['APP']+'/ruby/router.rb'
-eval(`routes.rb`)
 
 class Handler
   @@router = nil
 
   def call(env)
-    @@router ||= Router.new(Routes.routes)
+    @@router ||= Router.new(JSON.parse `yaml2json #{ENV['APP']}/config/routes.yml`)
     context = @@router.detect(env['PATH_INFO'])
     condition = if context.nil?
                   false
