@@ -9,7 +9,6 @@
   view: index.html
   main: entry.html
   helper: Entry
-  out_dir: /tmp/public
 
 # Archive
 -
