@@ -12,6 +12,5 @@ filter="jq -c '. ${local_context}'"
 
 find ${APP}/public/* -maxdepth 1 -print0 | xargs -0 -I@ cp -rv @ "${out_dir}"
 
-for publisher in $(find ${APP}/bin/publish/*); do
-  . "${publisher}"
-done
+uris.sh | xargs -P0 -I@ router.rb @ | eval "${filter}" \
+ | tr '\n' '\0' | xargs -0 -P${MAX_PROCS} -I@ build.sh @ ${out_dir}
