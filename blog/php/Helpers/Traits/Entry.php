@@ -19,8 +19,12 @@ trait Entry {
     if ($summary) {
       $num_of_elements_in_summary = $this->config('num_of_elements_in_summary');
     }
+    $filter = "";
+    if (!is_null($num_of_elements_in_summary)) {
+      $filter = " | jq '[.[0],.[1][0:${num_of_elements_in_summary}]]'";
+    }
 
-    return $this->load_content($file_name, $this->context('uri'), $num_of_elements_in_summary);
+    return $this->load_content($file_name, $this->context('uri'), $filter);
   }
 
   public function entry_title($id) {
