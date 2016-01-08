@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-entry_ids.sh | sed -E 's/^.+$/\/\0\//'
+entry_ids_opened.sh | sed -E 's/^.+$/\/\0\//'
