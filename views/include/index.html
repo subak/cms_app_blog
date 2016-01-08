@@ -1,0 +1,46 @@
+<div class="home">
+  <div class="posts">
+    <?= $this->each($this->ids(), function ($i, $id) { ?>
+
+    <div class="post py3">
+      <?= $this->tag('p', $this->created($id)->format('Y-m-d'), ['class' => 'post-meta']) ?>
+
+      <?= $this->link_to("", "/${id}/", ['class' => 'post-link']) ?>
+
+      <article class="post-content">
+        <?= $this->entry($id, true) ?>
+      </article>
+    </div>
+
+    <? }) ?>
+  </div>
+
+  <div class="pagination clearfix mb1 mt4">
+    <div class="left">
+      <? if ($page=$this->prev_page()): ?>
+      <?= $this->link_to('Newer', $page == 1 ? '/' : "/page/${page}/", ['class' => 'pagination-item']) ?>
+      <? else: ?>
+      <span class="pagination-item disabled">Newer</span>
+      <? endif; ?>
+    </div>
+
+    <div class="right">
+      <? if ($page=$this->next_page()): ?>
+      <?= $this->link_to('Older', "/page/${page}/", ['class' => 'pagination-item']) ?>
+      <? else: ?>
+      <span class="pagination-item disabled">Older</span>
+      <? endif; ?>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  // h1の場所を移動
+  [].forEach.call(document.querySelectorAll('.post.py3'), function (el) {
+    var title = el.querySelector('.post-content h1');
+    title.classList.add('post-title');
+    el.querySelector('.post-link').appendChild(el.querySelector('.post-content h1'));
+  });
+</script>
+
