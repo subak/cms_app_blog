@@ -35,13 +35,13 @@ docker run で立ち上げたcontainer上でコマンドを実行していきま
 $ letsencrypt certonly
 ```
 
-![](1.png)
+![](./1.png)
 
-![](2.png)
+![](./2.png)
 
-![](3.png)
+![](./3.png)
 
-![](4.png)
+![](./4.png)
 
 
 ```

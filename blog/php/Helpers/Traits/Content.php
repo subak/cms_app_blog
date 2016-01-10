@@ -54,20 +54,11 @@ trait Content {
     return " | pup '${selector}'";
   }
 
-  protected function rel_filter($rel_dir, $assets, $ext) {
+  protected function rel_filter($rel_dir, $assets) {
     $assets_ptn = implode('|', $assets);
-
-    if (in_array($ext, ['md', 'rst'])) {
-      return <<<EOF
- | sed -r 's/"([^/]*)\.(${assets_ptn})"/"${rel_dir}\\1.\\2"/'
-EOF;
-    } else if (in_array($ext, ['adoc'])) {
-      return <<<EOF
+    return <<<EOF
  | sed -r 's/"\.\/([^"]+)\.(${assets_ptn})"/"${rel_dir}\\1.\\2"/'
 EOF;
-    }
-
-    throw new \Exception();
   }
 
   public function content_title($file_name) {
@@ -103,12 +94,12 @@ EOF;
       case 'md':
       case 'rst':
         $filter = $this->pandoc_filter($including_title, $excerpt);
-        $filter .= $this->rel_filter($rel_dir, $assets, $ext);
+        $filter .= $this->rel_filter($rel_dir, $assets);
         $format = $this->config("pandoc_format_${ext}");
         return `pandoc -f ${format} -t json ${path} ${filter} | pandoc -f json -t html5`;
       case 'adoc':
         $filter = $this->adoc_filter($including_title, $excerpt);
-        $filter .= $this->rel_filter($rel_dir, $assets, $ext);
+        $filter .= $this->rel_filter($rel_dir, $assets);
         return `asciidoctor -o - ${path} ${filter}`;
       default:
         throw new \Exception();
