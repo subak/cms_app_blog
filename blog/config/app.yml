@@ -7,3 +7,4 @@ pandoc_format_rst: rst
 resources:
   - jpg
   - png
+excerpt_length: 2

@@ -6,7 +6,7 @@ trait Content {
   protected function detect_content($file_name) {
     $info = pathinfo($file_name);
     if (!array_key_exists('extension', $info)) {
-      $file_name = trim(`find ${file_name}.* -type f | egrep '(\.md|\.rst)' | head -n 1`);
+      $file_name = trim(`find ${file_name}.* -type f | egrep '(\.md|\.rst|\.adoc)' | head -n 1`);
       $info = pathinfo($file_name);
     }
     return "${info['dirname']}/${info['basename']}";
@@ -27,19 +27,17 @@ trait Content {
 EOF;
 
     $info = pathinfo($file_name);
-    $format = $this->config("pandoc_format_${info['extension']}");
-    return `pandoc -f ${format} -t json ${file_name} ${filter} | pandoc -f json -t html5`;
-
-//    switch ($info['extension']) {
-//      case 'md':
-//        $format = $this->config('pandoc_format_markdown');
-//        return `pandoc -f ${format} -t json ${file_name} ${filter} | pandoc -f json -t html5`;
-//      case 'rst':
-//        return 'asciidoc';
-//      default:
-//        return null;
-//    }
-
+    $ext = $info['extension'];
+    switch ($ext) {
+      case 'md':
+      case 'rst':
+      $format = $this->config("pandoc_format_${ext}");
+      return `pandoc -f ${format} -t json ${file_name} ${filter} | pandoc -f json -t html5`;
+      case 'adoc':
+        return `asciidoctor -o - ${file_name} | pup 'div#header, div#content' | sed -r 's/"\.\/([^"]+)\.(jpg|png)"/"${rel_dir}\\1.\\2"/'`;
+      default:
+        return null;
+    }
   }
 
   public function build_content_resource($file_name, $out_dir) {

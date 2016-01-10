@@ -4,7 +4,7 @@ class Handler
   @@router = nil
 
   def call(env)
-    @@router ||= Router.new(JSON.parse `yaml2json #{ENV['APP']}/config/routes.yml`)
+    @@router ||= Router.new(JSON.parse `yaml2json.rb #{ENV['APP']}/config/routes.yml`)
     context = @@router.detect(env['PATH_INFO'])
     condition = if context.nil?
                   false
