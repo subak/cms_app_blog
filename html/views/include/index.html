@@ -5,10 +5,12 @@
     <div class="post py3">
       <?= $this->tag('p', $this->created($id)->format('Y-m-d'), ['class' => 'post-meta']) ?>
 
-      <?= $this->link_to("", "/${id}/", ['class' => 'post-link']) ?>
+      <?= $this->link_to(function ($args) { ?>
+      <?= $this->tag('h1', $this->entry_title($args['id']), ['class' => 'post-title']) ?>
+      <? }, $this->entry_uri($id), ['class' => 'post-link'], ['id' => $id]) ?>
 
       <article class="post-content">
-        <?= $this->entry($id, true) ?>
+        <?= $this->entry_body($id, true) ?>
       </article>
     </div>
 
@@ -33,14 +35,3 @@
     </div>
   </div>
 </div>
-
-
-<script>
-  // h1の場所を移動
-  [].forEach.call(document.querySelectorAll('.post.py3'), function (el) {
-    var title = el.querySelector('.post-content h1');
-    title.classList.add('post-title');
-    el.querySelector('.post-link').appendChild(el.querySelector('.post-content h1'));
-  });
-</script>
-

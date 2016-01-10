@@ -12,35 +12,110 @@ trait Content {
     return "${info['dirname']}/${info['basename']}";
   }
 
-  public function load_content($file_name, $uri, $filter='') {
-    $file_name = $this->detect_content($file_name);
-
+  protected function rel_dir($path, $uri) {
     $content_dir_name = $this->config('content_dir_name');
-
     $rel_http_dir = str_repeat('../', substr_count($uri, '/') - 1)."./";
-    $rel_content_dir = preg_replace("@^${content_dir_name}/@", '', dirname($file_name));
+    $rel_content_dir = preg_replace("@^${content_dir_name}/@", '', dirname($path));
     $rel_dir = str_replace('/', '\/', "${rel_http_dir}${rel_content_dir}/");
-    $assets = implode('|', $this->config('resources'));
+    return $rel_dir;
+  }
 
-    $filter .= <<<EOF
- | jq . | sed -r 's/"([^/]*)\.(${assets})"/"${rel_dir}\\1.\\2"/'
+  protected function pandoc_filter($including_title, $excerpt) {
+    if ($including_title) {
+      $filter = ' | jq .';
+    } else {
+      $filter = " | jq '[.[0],.[1][1:]]'";
+    }
+
+    if (!is_null($excerpt)) {
+      $filter .= " | jq '[.[0],.[1][0:${excerpt}]]'";
+    }
+
+    return $filter;
+  }
+
+  protected function adoc_filter($including_title, $excerpt) {
+    $selectors = [];
+
+    if ($including_title) {
+      $selectors[] = '#header > :nth-child(n+0)';
+    }
+
+    if (is_null($excerpt)) {
+      $selectors[] = '#content > :nth-child(n+0)';
+    } else {
+      for ($i=1; $i<=$excerpt; $i++) {
+        $selectors[] = "#content > :nth-child(${i})";
+      }
+    }
+
+    $selector = join(',', $selectors);
+
+    return " | pup '${selector}'";
+  }
+
+  protected function rel_filter($rel_dir, $assets, $ext) {
+    $assets_ptn = implode('|', $assets);
+
+    if (in_array($ext, ['md', 'rst'])) {
+      return <<<EOF
+ | sed -r 's/"([^/]*)\.(${assets_ptn})"/"${rel_dir}\\1.\\2"/'
 EOF;
+    } else if (in_array($ext, ['adoc'])) {
+      return <<<EOF
+ | sed -r 's/"\.\/([^"]+)\.(${assets_ptn})"/"${rel_dir}\\1.\\2"/'
+EOF;
+    }
 
-    $info = pathinfo($file_name);
+    throw new \Exception();
+  }
+
+  public function content_title($file_name) {
+    $path = $this->detect_content($file_name);
+    return trim(`head -1 ${path} | sed -r 's/^[#= ]*(.+)[#= ]*$/\\1/'`);
+  }
+
+  public function content_body($file_name, $uri, $excerpt=null) {
+    return $this->load_content($file_name, $uri, false, $excerpt);
+  }
+
+  /**
+   * @param $file_name
+   * @param $uri
+   * @param bool $including_title
+   * @param null $excerpt
+   * @return null
+   * @throws \Exception
+   */
+  public function load_content($file_name, $uri, $including_title=false, $excerpt=null) {
+    $path = $this->detect_content($file_name);
+    $rel_dir = $this->rel_dir($path, $uri);
+    $assets = $this->config('resources');
+
+    if ($out_dir = $this->context('out_dir')) {
+      $msg = $this->build_content_resource($file_name, $out_dir);
+      fputs(STDERR, $msg);
+    }
+
+    $info = pathinfo($path);
     $ext = $info['extension'];
     switch ($ext) {
       case 'md':
       case 'rst':
-      $format = $this->config("pandoc_format_${ext}");
-      return `pandoc -f ${format} -t json ${file_name} ${filter} | pandoc -f json -t html5`;
+        $filter = $this->pandoc_filter($including_title, $excerpt);
+        $filter .= $this->rel_filter($rel_dir, $assets, $ext);
+        $format = $this->config("pandoc_format_${ext}");
+        return `pandoc -f ${format} -t json ${path} ${filter} | pandoc -f json -t html5`;
       case 'adoc':
-        return `asciidoctor -o - ${file_name} | pup 'div#header, div#content' | sed -r 's/"\.\/([^"]+)\.(jpg|png)"/"${rel_dir}\\1.\\2"/'`;
+        $filter = $this->adoc_filter($including_title, $excerpt);
+        $filter .= $this->rel_filter($rel_dir, $assets, $ext);
+        return `asciidoctor -o - ${path} ${filter}`;
       default:
-        return null;
+        throw new \Exception();
     }
   }
 
-  public function build_content_resource($file_name, $out_dir) {
+  protected function build_content_resource($file_name, $out_dir) {
     $content_dir_name = $this->config('content_dir_name');
     $content_dir = dirname($file_name);
     $rel_content_dir = preg_replace("@^${content_dir_name}/@", '', dirname($file_name));

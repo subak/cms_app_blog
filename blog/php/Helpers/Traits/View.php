@@ -15,7 +15,7 @@ trait View {
     return $attr;
   }
 
-  public function tag($tag, $content=null, $option=array()) {
+  public function tag($tag, $content=null, $option=array(), $args=array()) {
     $tags = array('br','img','hr','meta','input','embed','area','base','col','keygen','link','param','source');
 
     if (is_array($content)) {
@@ -25,7 +25,7 @@ trait View {
       $attr = $this->attr($option);
       ob_start();
       echo "<${tag}${attr}>";
-      $content();
+      $content($args);
       echo "</${tag}>";
       $content = ob_get_clean();
     } else {
@@ -39,7 +39,7 @@ trait View {
     }
   }
 
-  public function link_to($content, $path, $option=array()) {
+  public function link_to($content, $path, $option=array(), $args=array()) {
     $option['href'] = $this->rel($path);
 
     if ( $this->context('local') ) {
@@ -49,6 +49,6 @@ trait View {
       }
     }
 
-    return $this->tag('a', $content, $option);
+    return $this->tag('a', $content, $option, $args);
   }
 }

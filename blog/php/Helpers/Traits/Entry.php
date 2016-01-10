@@ -3,32 +3,42 @@
 namespace Helpers\Traits;
 
 trait Entry {
+  protected function entry_file_name($id) {
+    $content_dir_name = $this->config('content_dir_name');
+    return "${content_dir_name}/entry/${id}/${id}";
+  }
+
+  protected function entry_uri($id) {
+    // ページを考慮するように後で変更
+    return "/${id}/";
+  }
+
+  public function entry_title($id=null) {
+    if (is_null($id)) {
+      $id = $this->id();
+    }
+
+    return $this->content_title($this->entry_file_name($id));
+  }
+
+  public function entry_body($id=null, $summary=false) {
+    if (is_null($id)) {
+      $id = $this->id();
+    }
+
+    return $this->content_body($this->entry_file_name($id),
+      $this->entry_uri($id),
+      $summary ? $this->config('excerpt_length') : null);
+  }
+
   public function entry($id=null, $summary=false) {
     if (is_null($id)) {
       $id = $this->id();
     }
 
-    $file_name = "content/entry/${id}/${id}";
-
-    if ($out_dir = $this->context('out_dir')) {
-      $msg = $this->build_content_resource($file_name, $out_dir);
-      fputs(STDERR, $msg);
-    }
-
-    $num_of_elements_in_summary=null;
-    if ($summary) {
-      $num_of_elements_in_summary = $this->config('num_of_elements_in_summary');
-    }
-    $filter = "";
-    if (!is_null($num_of_elements_in_summary)) {
-      $filter = " | jq '[.[0],.[1][0:${num_of_elements_in_summary}]]'";
-    }
-
-    return $this->load_content($file_name, $this->context('uri'), $filter);
-  }
-
-  public function entry_title($id) {
-    return `entry_title.sh ${id}`;
+    return $this->load_content($this->entry_file_name($id),
+      $this->entry_uri($id), true,
+      $summary ? $this->config('excerpt_length') : null);
   }
 
   public static function entry_created($id) {

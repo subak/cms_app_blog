@@ -17,7 +17,8 @@ spl_autoload_register(function ($name)
   return false;
 });
 
-$helper = "\\Helpers\\${context['helper']}";
-(new $helper($context))->render();
+$klass = "\\Helpers\\${context['helper']}";
+$helper = new $klass($context);
+$helper->render();
 
 exit(0);
