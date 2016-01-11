@@ -1,0 +1,9 @@
+static:
+  image: subak/cms:static
+  environment:
+    ID_RSA:
+    CONTENT_REPO: 'git@github.com:subak/blog.tk84.net.git'
+    APP_REPO: 'git@bitbucket.org:subak/cms-engine-blog.git'
+    HTML_REPO: 'git@github.com:subak/cms.theme.pixyll.git'
+  ports:
+    - 8000:80

@@ -12,10 +12,14 @@ trait Content {
     return "${info['dirname']}/${info['basename']}";
   }
 
-  protected function rel_dir($path, $uri) {
+  protected function rel_content_dir($path) {
     $content_dir_name = $this->config('content_dir_name');
+    return preg_replace("@^${content_dir_name}/@", '', dirname($path));
+  }
+
+  protected function rel_dir($path, $uri) {
     $rel_http_dir = str_repeat('../', substr_count($uri, '/') - 1)."./";
-    $rel_content_dir = preg_replace("@^${content_dir_name}/@", '', dirname($path));
+    $rel_content_dir = $this->rel_content_dir($path);
     $rel_dir = str_replace('/', '\/', "${rel_http_dir}${rel_content_dir}/");
     return $rel_dir;
   }
@@ -57,7 +61,7 @@ trait Content {
   protected function rel_filter($rel_dir, $assets) {
     $assets_ptn = implode('|', $assets);
     return <<<EOF
- | sed -r 's/"\.\/([^"]+)\.(${assets_ptn})"/"${rel_dir}\\1.\\2"/'
+ | sed -r 's/"([^/]+)\.(${assets_ptn})"/"${rel_dir}\\1.\\2"/'
 EOF;
   }
 
@@ -84,7 +88,7 @@ EOF;
     $assets = $this->config('resources');
 
     if ($out_dir = $this->context('out_dir')) {
-      $msg = $this->build_content_resource($file_name, $out_dir);
+      $msg = $this->build_content_resource($path, $this->config('content_dir_name'), $out_dir);
       fputs(STDERR, $msg);
     }
 
@@ -100,18 +104,34 @@ EOF;
       case 'adoc':
         $filter = $this->adoc_filter($including_title, $excerpt);
         $filter .= $this->rel_filter($rel_dir, $assets);
-        return `asciidoctor -o - ${path} ${filter}`;
+
+        $meta = @yaml_parse_file("${info['dirname']}/${info['filename']}.yml");
+        if ($meta && array_key_exists('diagram', $meta)) {
+          $content_dir = "/tmp/cms";
+          $destination_dir = $content_dir.'/'.$this->rel_content_dir($path);
+          fputs(STDERR, `mkdir -pv ${destination_dir}`);
+          $tmp_path = "${destination_dir}/${info['basename']}";
+          copy($path, $tmp_path);
+
+          if ($out_dir = $this->context('out_dir')) {
+            $msg = $this->build_content_resource($tmp_path, $content_dir, $out_dir);
+            fputs(STDERR, $msg);
+          }
+
+          return `asciidoctor -r asciidoctor-diagram -o - ${tmp_path} ${filter}`;
+        } else {
+          return `asciidoctor -o - ${path} ${filter}`;
+        }
       default:
         throw new \Exception();
     }
   }
 
-  protected function build_content_resource($file_name, $out_dir) {
-    $content_dir_name = $this->config('content_dir_name');
+  protected function build_content_resource($file_name, $content_dir_name, $out_dir) {
     $content_dir = dirname($file_name);
     $rel_content_dir = preg_replace("@^${content_dir_name}/@", '', dirname($file_name));
     $local_dir = "${out_dir}/${rel_content_dir}";
-    $resources = '\.'.implode('|\.', $this->config('resources'));
+    $resources = '\.'.implode('$|\.', $this->config('resources')).'$';
 
     $msg = '';
     $msg .= `mkdir -pv ${local_dir}`;
