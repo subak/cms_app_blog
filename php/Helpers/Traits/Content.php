@@ -47,6 +47,7 @@ trait Content {
 
     if (is_null($excerpt)) {
       $selectors[] = '#content > :nth-child(n+0)';
+      $selectors[] = '#footnotes > :nth-child(n+0)';
     } else {
       for ($i=1; $i<=$excerpt; $i++) {
         $selectors[] = "#content > :nth-child(${i})";
