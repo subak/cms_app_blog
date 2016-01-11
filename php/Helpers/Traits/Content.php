@@ -55,7 +55,7 @@ trait Content {
 
     $selector = join(',', $selectors);
 
-    return " | pup '${selector}'";
+    return " | pup --pre '${selector}'";
   }
 
   protected function rel_filter($rel_dir, $assets) {
@@ -84,6 +84,9 @@ EOF;
    */
   public function load_content($file_name, $uri, $including_title=false, $excerpt=null) {
     $path = $this->detect_content($file_name);
+    $info = pathinfo($path);
+    $meta = @yaml_parse_file("${info['dirname']}/${info['filename']}.yml");
+    $meta = $meta ? $meta : [];
     $rel_dir = $this->rel_dir($path, $uri);
     $assets = $this->config('resources');
 
@@ -92,7 +95,6 @@ EOF;
       fputs(STDERR, $msg);
     }
 
-    $info = pathinfo($path);
     $ext = $info['extension'];
     switch ($ext) {
       case 'md':
@@ -104,8 +106,8 @@ EOF;
       case 'adoc':
         $filter = $this->adoc_filter($including_title, $excerpt);
         $filter .= $this->rel_filter($rel_dir, $assets);
+        $option = $this->config('asciidoctor_option');
 
-        $meta = @yaml_parse_file("${info['dirname']}/${info['filename']}.yml");
         if ($meta && array_key_exists('diagram', $meta)) {
           $content_dir = "/tmp/cms";
           $destination_dir = $content_dir.'/'.$this->rel_content_dir($path);
@@ -118,9 +120,9 @@ EOF;
             fputs(STDERR, $msg);
           }
 
-          return `asciidoctor -r asciidoctor-diagram -o - ${tmp_path} ${filter}`;
+          return `asciidoctor ${option} -r asciidoctor-diagram -o - ${tmp_path} ${filter}`;
         } else {
-          return `asciidoctor -o - ${path} ${filter}`;
+          return `asciidoctor ${option} -o - ${path} ${filter}`;
         }
       default:
         throw new \Exception();
