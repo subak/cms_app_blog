@@ -13,6 +13,18 @@ trait Entry {
     return "/${id}/";
   }
 
+  public function entry_meta($id=null) {
+    if (is_null($id)) {
+      $id = $this->id();
+    }
+
+    $file_name = $this->entry_file_name($id);
+    $meta = @yaml_parse_file("${file_name}.yml");
+    $meta = $meta ? $meta : [];
+
+    return $meta;
+  }
+
   public function entry_title($id=null) {
     if (is_null($id)) {
       $id = $this->id();
@@ -26,9 +38,12 @@ trait Entry {
       $id = $this->id();
     }
 
+    $meta = $this->entry_meta($id);
+    $excerpt = @$meta['excerpt'] ? @$meta['excerpt'] : $this->config('excerpt_length');
+
     return $this->content_body($this->entry_file_name($id),
       $this->entry_uri($id),
-      $summary ? $this->config('excerpt_length') : null);
+      $summary ? $excerpt : null);
   }
 
   public function entry($id=null, $summary=false) {
