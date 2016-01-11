@@ -1,0 +1,63 @@
+- match: ^/env$
+  body: |
+    #{JSON.generate(env)}
+
+# Entry
+-
+  match: '^(?<uri>/(?<id>[\w\W\d]{4})/)(?:index.html)?$'
+  handler: page.php
+  view: index.html
+  main: entry.html
+  helper: Entry
+
+# Archive
+-
+  match: '^(?<uri>/archives(?:/(?<yyyymm>[1-9][0-9]{4}(?:[1][0-2]|[0][1-9]))/)?)(?:index.html)?$'
+  handler: page.php
+  view: index.html
+  helper: Archive
+
+# Top
+-
+  match: '^(?<uri>/)(?:index\.html)?$'
+  handler: page.php
+  view: index.html
+  helper: Index
+  page: 1
+
+# Paginated Index
+-
+  match: '^(?<uri>/page/(?<page>[\d]+)/)(?:index\.html)?$'
+  handler: page.php
+  view: index.html
+  helper: Index
+
+-
+  match: '\.md|\.yml'
+  status: 403
+  body: forbidden
+
+# Directory
+-
+  match: '^(?<view>(?<uri>(/[^/]+)*/)(?:index\.html))$'
+  handler: page.php
+  helper: Page
+  condition: |
+    File.exists?('app/php/views',context['view']))
+
+# Xml
+-
+  match: '^(?<view>(?<uri>(/[^/]+)*/[^/]+\.xml))$'
+  handler: page.php
+  helper: Page
+  content_type: application/xml; charset=utf-8
+  condition: |
+    File.exists?(File.join('app/php/views',context['view']))
+
+# Index
+-
+  match: '^(?<view>(?<uri>(/[^/]+)*/[^/]+))$'
+  handler: page.php
+  helper: Page
+  condition: |
+    File.exists?(File.join('app/php/views',context['view']))
