@@ -1,0 +1,33 @@
+- match: ^/env$
+  body: |
+    #{JSON.generate(env)}
+
+-
+  match: '\.md|\.yml'
+  status: 403
+  body: forbidden
+
+# Directory
+-
+  match: '^(?<view>(?<uri>(/[^/]+)*/)(?:index\.html))$'
+  handler: page.php
+  helper: Page
+  condition: |
+    File.exists?('app/php/views',context['view']))
+
+# Xml
+-
+  match: '^(?<view>(?<uri>(/[^/]+)*/[^/]+\.xml))$'
+  handler: page.php
+  helper: Page
+  content_type: application/xml; charset=utf-8
+  condition: |
+    File.exists?(File.join('app/php/views',context['view']))
+
+# Index
+-
+  match: '^(?<view>(?<uri>(/[^/]+)*/[^/]+))$'
+  handler: page.php
+  helper: Page
+  condition: |
+    File.exists?(File.join('app/php/views',context['view']))
