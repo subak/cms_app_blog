@@ -4,12 +4,20 @@ namespace Helpers;
 
 class Page
 {
-  use Traits\View, Traits\URI, Traits\Utility, Traits\Property;
+  use Traits\View, Traits\Content;
 
   public function __construct($context) {
     self::page_context()->register(yaml_parse_file('app/config/app.yml'), 'app');
     self::page_context()->register(yaml_parse_file('content/web.yml'), 'content');
     self::page_context()->register($context, 'handler');
+  }
+
+  private function router() {
+    static $router = null;
+    if (is_null($router)) {
+      $router = new \Router(yaml_parse_file('app/config/routes.yml'));
+    }
+    return $router;
   }
 
   static public function page_context($key=null, $scan_or_name=false) {
@@ -25,10 +33,6 @@ class Page
     }
   }
 
-  public function context($key=null, $scan_or_name=false) {
-    return self::page_context($key, $scan_or_name);
-  }
-
   static protected function search_context($context, $key, $scan_or_name=false) {
     if (is_string($scan_or_name)) {
       return $context->search($key, $scan_or_name);
@@ -39,8 +43,8 @@ class Page
     }
   }
 
-  public function site_name() {
-    return self::meta('title');
+  public function context($key=null, $scan_or_name=false) {
+    return self::page_context($key, $scan_or_name);
   }
 
   public function render() {
@@ -51,7 +55,7 @@ class Page
     $view = $this->context('view');
 
     if (is_null($dir)) {
-      $dir = $this->config('content_include_dir');
+      $dir = $this->context('content_include_dir');
     }
     $dir = '/'.trim($dir, '/').'/';
 

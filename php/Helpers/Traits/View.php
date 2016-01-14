@@ -51,4 +51,34 @@ trait View {
 
     return $this->tag('a', $content, $option, $args);
   }
+
+  public function url_for($path) {
+    return $this->context('scheme').'://'.$this->context('host').$path;
+  }
+
+  public function rel($path) {
+    $level = substr_count($this->context('uri'), "/");
+    $path = preg_replace('@^/@', './', $path);
+    for ($i=1; $i < $level; $i++) {
+      $path = '../'.$path;
+    }
+    return $path;
+  }
+
+  public function each($array, $closure, $tag=null, $args=[]) {
+    if ($array) {
+      ob_start();
+      if ($tag) {
+        echo "<$tag>";
+      }
+      foreach ($array as $key => $value) {
+        $closure($key, $value, $args);
+      }
+      if ($tag) {
+        echo "</$tag>";
+      }
+      return ob_get_clean();
+    }
+    return null;
+  }
 }

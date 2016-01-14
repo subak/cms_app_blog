@@ -21,14 +21,14 @@ trait Content {
     }
   }
 
-  protected function doc_context($file_name, $ref='handler') {
+  protected function doc_context($file_name) {
     $context = new \Context(\Helpers\Page::page_context()->get());
-    $context->insert_before($ref, $this->doc_metadata($file_name), 'doc');
+    $context->insert_before('handler', $this->doc_metadata($file_name), 'doc');
     return $context;
   }
 
   protected function rel_content_dir($path) {
-    $content_dir_name = $this->config('content_dir_name');
+    $content_dir_name = $this->context('content_dir_name');
     return preg_replace("@^${content_dir_name}/@", '', dirname($path));
   }
 
@@ -81,13 +81,17 @@ trait Content {
 EOF;
   }
 
-  public function content_title($file_name) {
+  public function doc_title($file_name) {
     $path = $this->detect_content($file_name);
     return trim(`head -1 ${path} | sed -r 's/^[#= ]*(.+)[#= ]*$/\\1/'`);
   }
 
-  public function content_body($file_name, $uri, $excerpt=null) {
+  public function doc_body($file_name, $uri, $excerpt=null) {
     return $this->load_content($file_name, $uri, false, $excerpt);
+  }
+
+  public function doc_body_excerpt($file_name, $uri, $excerpt) {
+
   }
 
   /**
@@ -123,7 +127,7 @@ EOF;
         $filter .= $this->rel_filter($rel_dir, $assets);
         $option = $context->search('asciidoctor_option');
 
-        if ($meta && array_key_exists('diagram', $meta)) {
+        if ($context->search('diagram')) {
           $content_dir = "/tmp/cms";
           $destination_dir = $content_dir.'/'.$this->rel_content_dir($path);
           fputs(STDERR, `mkdir -pv ${destination_dir}`);
@@ -148,7 +152,8 @@ EOF;
     $content_dir = dirname($file_name);
     $rel_content_dir = preg_replace("@^${content_dir_name}/@", '', dirname($file_name));
     $local_dir = "${out_dir}/${rel_content_dir}";
-    $resources = '\.'.implode('$|\.', $this->config('resources')).'$';
+    $context = $this->doc_context($file_name);
+    $resources = '\.'.implode('$|\.', $context->search('resources')).'$';
 
     $msg = '';
     $msg .= `mkdir -pv ${local_dir}`;
