@@ -8,33 +8,26 @@ class Context
     $this->stack = $stack;
   }
 
-  public function scan($key) {
-    $values = [];
-    foreach ( array_reverse($this->stack) as $obj) {
-      $value = $this->filter($key, $obj['context']);
-      if (!is_null($value)) {
-        $values[] = $value;
+  public function get($key, $desc=true, $multiple=false) {
+    $stack = $desc ? array_reverse($this->stack) : $this->stack;
+    if ($multiple) {
+      $values = [];
+      foreach ( $stack as $obj) {
+        $value = $this->filter($key, $obj['context']);
+        if (!is_null($value)) {
+          $values[] = $value;
+        }
       }
-    }
-    return $values;
-  }
-
-  public function search($key, $name=null) {
-    if (is_null($name)) {
+      return $values;
+    } else {
       $value = null;
-      foreach ( array_reverse($this->stack) as $obj) {
+      foreach ( $stack as $obj) {
         $value = $this->filter($key, $obj['context']);
         if (!is_null($value)) {
           break;
         }
       }
       return $value;
-    } else {
-      if ($index = $this->find_stack($name)) {
-        return $this->filter($key,$this->stack[$index]['context']);
-      } else {
-        return null;
-      }
     }
   }
 
@@ -60,12 +53,12 @@ class Context
     return $value;
   }
 
-  public function get() {
-    return $this->stack;
-  }
-
-  public function set($stack) {
-    $this->stack = $stack;
+  public function stack($stack=null) {
+    if (is_null($stack)) {
+      return $this->stack;
+    } else {
+      $this->stack = $stack;
+    }
   }
 
   public function register($context, $name, $prepend=false) {

@@ -22,14 +22,13 @@ trait Content {
   }
 
   protected function doc_context($file_name) {
-    $context = new \Context(\Helpers\Page::page_context()->get());
+    $context = new \Context(\Helpers\Page::page_context()->stack());
     $context->insert_before('handler', $this->doc_metadata($file_name), 'doc');
     return $context;
   }
 
   protected function rel_content_dir($path) {
-    $content_dir_name = $this->context('content_dir_name');
-    return preg_replace("@^${content_dir_name}/@", '', dirname($path));
+    return preg_replace("@^content/@", '', dirname($path));
   }
 
   protected function rel_dir($path, $uri) {
@@ -107,10 +106,10 @@ EOF;
     $info = pathinfo($path);
     $context = $this->doc_context($file_name);
     $rel_dir = $this->rel_dir($path, $uri);
-    $assets = $context->search('resources');
+    $assets = $context->get('resources');
 
-    if ($out_dir = $context->search('out_dir')) {
-      $msg = $this->build_content_resource($path, $context->search('content_dir_name'), $out_dir);
+    if ($out_dir = $context->get('out_dir')) {
+      $msg = $this->build_content_resource($path, $out_dir);
       fputs(STDERR, $msg);
     }
 
@@ -120,14 +119,14 @@ EOF;
       case 'rst':
         $filter = $this->pandoc_filter($including_title, $excerpt);
         $filter .= $this->rel_filter($rel_dir, $assets);
-        $format = $context->search("pandoc_format_${ext}");
+        $format = $context->get("pandoc_format_${ext}");
         return `pandoc -f ${format} -t json ${path} ${filter} | pandoc -f json -t html5`;
       case 'adoc':
         $filter = $this->adoc_filter($including_title, $excerpt);
         $filter .= $this->rel_filter($rel_dir, $assets);
-        $option = $context->search('asciidoctor_option');
+        $option = $context->get('asciidoctor_option');
 
-        if ($context->search('diagram')) {
+        if ($context->get('diagram')) {
           $content_dir = "/tmp/cms";
           $destination_dir = $content_dir.'/'.$this->rel_content_dir($path);
           fputs(STDERR, `mkdir -pv ${destination_dir}`);
@@ -148,12 +147,12 @@ EOF;
     }
   }
 
-  protected function build_content_resource($file_name, $content_dir_name, $out_dir) {
+  protected function build_content_resource($file_name, $out_dir) {
     $content_dir = dirname($file_name);
-    $rel_content_dir = preg_replace("@^${content_dir_name}/@", '', dirname($file_name));
+    $rel_content_dir = preg_replace("@^content/@", '', dirname($file_name));
     $local_dir = "${out_dir}/${rel_content_dir}";
     $context = $this->doc_context($file_name);
-    $resources = '\.'.implode('$|\.', $context->search('resources')).'$';
+    $resources = '\.'.implode('$|\.', $context->get('resources')).'$';
 
     $msg = '';
     $msg .= `mkdir -pv ${local_dir}`;

@@ -7,8 +7,8 @@ class Page
   use Traits\View, Traits\Content;
 
   public function __construct($context) {
-    self::page_context()->register(yaml_parse_file('app/config/app.yml'), 'app');
-    self::page_context()->register(yaml_parse_file('content/web.yml'), 'content');
+    self::page_context()->register(yaml_parse_file('app/config/meta.yml'), 'app');
+    self::page_context()->register(yaml_parse_file('content/meta.yml'), 'content');
     self::page_context()->register($context, 'handler');
   }
 
@@ -20,31 +20,20 @@ class Page
     return $router;
   }
 
-  static public function page_context($key=null, $scan_or_name=false) {
+  static public function page_context() {
     static $context = null;
     if (is_null($context)) {
       $context = new \Context();
     }
+    return $context;
+  }
 
+  public function context($key=null, $desc=true, $multiple=false) {
     if (is_null($key)) {
-      return $context;
+      return self::page_context();
     } else {
-      return self::search_context($context, $key, $scan_or_name);
+      return self::page_context()->get($key, $desc, $multiple);
     }
-  }
-
-  static protected function search_context($context, $key, $scan_or_name=false) {
-    if (is_string($scan_or_name)) {
-      return $context->search($key, $scan_or_name);
-    } else if ($scan_or_name) {
-      return $context->scan($key);
-    } else {
-      return $context->search($key);
-    }
-  }
-
-  public function context($key=null, $scan_or_name=false) {
-    return self::page_context($key, $scan_or_name);
   }
 
   public function render() {
