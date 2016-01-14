@@ -15,6 +15,9 @@ class Handler
                 end
 
     if (condition)
+      query = Hash[Hash[*env['QUERY_STRING'].scan(/([^=&]+)=([^=&]+)/).flatten].map{|k,v| [URI.decode_www_component(k),URI.decode_www_component(v)]}]
+      context.merge!(query)
+      context.merge!(JSON.parse query['context']) if query['context']
       status = context['status'] || 200
       content_type = context['content_type'] || 'text/html; charset=utf-8'
       body = if context['body']

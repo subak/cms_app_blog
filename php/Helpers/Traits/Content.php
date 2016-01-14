@@ -12,6 +12,21 @@ trait Content {
     return "${info['dirname']}/${info['basename']}";
   }
 
+  protected function doc_metadata($file_name) {
+    $path = "${file_name}.yml";
+    if (file_exists($path)) {
+      return yaml_parse_file("${file_name}.yml");
+    } else {
+      return [];
+    }
+  }
+
+  protected function doc_context($file_name, $ref='handler') {
+    $context = new \Context(\Helpers\Page::page_context()->get());
+    $context->insert_before($ref, $this->doc_metadata($file_name), 'doc');
+    return $context;
+  }
+
   protected function rel_content_dir($path) {
     $content_dir_name = $this->config('content_dir_name');
     return preg_replace("@^${content_dir_name}/@", '', dirname($path));
@@ -86,13 +101,12 @@ EOF;
   public function load_content($file_name, $uri, $including_title=false, $excerpt=null) {
     $path = $this->detect_content($file_name);
     $info = pathinfo($path);
-    $meta = @yaml_parse_file("${info['dirname']}/${info['filename']}.yml");
-    $meta = $meta ? $meta : [];
+    $context = $this->doc_context($file_name);
     $rel_dir = $this->rel_dir($path, $uri);
-    $assets = $this->config('resources');
+    $assets = $context->search('resources');
 
-    if ($out_dir = $this->context('out_dir')) {
-      $msg = $this->build_content_resource($path, $this->config('content_dir_name'), $out_dir);
+    if ($out_dir = $context->search('out_dir')) {
+      $msg = $this->build_content_resource($path, $context->search('content_dir_name'), $out_dir);
       fputs(STDERR, $msg);
     }
 
@@ -102,12 +116,12 @@ EOF;
       case 'rst':
         $filter = $this->pandoc_filter($including_title, $excerpt);
         $filter .= $this->rel_filter($rel_dir, $assets);
-        $format = $this->config("pandoc_format_${ext}");
+        $format = $context->search("pandoc_format_${ext}");
         return `pandoc -f ${format} -t json ${path} ${filter} | pandoc -f json -t html5`;
       case 'adoc':
         $filter = $this->adoc_filter($including_title, $excerpt);
         $filter .= $this->rel_filter($rel_dir, $assets);
-        $option = $this->config('asciidoctor_option');
+        $option = $context->search('asciidoctor_option');
 
         if ($meta && array_key_exists('diagram', $meta)) {
           $content_dir = "/tmp/cms";
@@ -116,7 +130,7 @@ EOF;
           $tmp_path = "${destination_dir}/${info['basename']}";
           copy($path, $tmp_path);
 
-          if ($out_dir = $this->context('out_dir')) {
+          if ($out_dir) {
             $msg = $this->build_content_resource($tmp_path, $content_dir, $out_dir);
             fputs(STDERR, $msg);
           }

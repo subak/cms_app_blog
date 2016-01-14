@@ -3,16 +3,6 @@
 namespace Helpers\Traits;
 
 trait Property {
-  public function context($key=null) {
-    if (is_null($key)) {
-      return $this->context;
-    } else if (array_key_exists($key, $this->context)) {
-      return $this->context[$key];
-    } else {
-      return null;
-    }
-  }
-
   public function config($key=null) {
     static $config = null;
     if (is_null($config)) {
@@ -27,6 +17,16 @@ trait Property {
     }
   }
 
+  public function meta($key=null) {
+    static $meta = null;
+    if (is_null($meta)) {
+      $meta = yaml_parse_file('content/web.yml');
+      return $meta[$key];
+    } else {
+      return $meta;
+    }
+  }
+
   private function router() {
     static $router = null;
     if (is_null($router)) {
@@ -35,12 +35,4 @@ trait Property {
     return $router;
   }
 
-  public function meta($key) {
-    static $meta = null;
-    if (is_null($meta)) {
-      $meta = yaml_parse_file('content/web.yml');
-    }
-
-    return $meta[$key];
-  }
 }
