@@ -10,16 +10,12 @@ namespace Helpers;
 
 class Index extends Page
 {
-  use Traits\Content, Traits\Entry;
-
-//  public function __construct($context) {
-//    parent::__construct($context);
-//  }
+  use Traits\Entry;
 
   public function ids() {
     static $ids = null;
     if (is_null($ids)) {
-      $num = $this->config('num_of_entries_per_page');
+      $num = $this->context('num_of_entries_per_page');
       $page = intval($this->context('page'));
       $start = ($page - 1) * $num + 1;
       $end = $page * $num;
@@ -44,6 +40,6 @@ class Index extends Page
 
   public function next_page() {
     $page = intval($this->context('page'));
-    return ($page * $this->config('num_of_entries_per_page')) >= $this->num_of_entries() ? null : $page + 1;
+    return ($page * $this->context('num_of_entries_per_page')) >= $this->num_of_entries() ? null : $page + 1;
   }
 }
