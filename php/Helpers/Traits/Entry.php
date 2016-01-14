@@ -3,6 +3,12 @@
 namespace Helpers\Traits;
 
 trait Entry {
+  protected function entry_context($from, $id) {
+    $context = new \Context($from->get());
+    $context->insert_before('handler', $this->entry_meta($id), 'entry');
+    return $context;
+  }
+
   protected function entry_file_name($id) {
     $content_dir_name = $this->config('content_dir_name');
     return "${content_dir_name}/entry/${id}/${id}";
@@ -38,12 +44,12 @@ trait Entry {
       $id = $this->id();
     }
 
-    $meta = $this->entry_meta($id);
-    $excerpt = @$meta['excerpt'] ? @$meta['excerpt'] : $this->config('excerpt_length');
+    $file_name = $this->entry_file_name($id);
+    $context = $this->doc_context($file_name);
 
-    return $this->content_body($this->entry_file_name($id),
+    return $this->content_body($file_name,
       $this->entry_uri($id),
-      $summary ? $excerpt : null);
+      $summary ? $context->search('excerpt') : null);
   }
 
   public function entry($id=null, $summary=false) {
@@ -51,9 +57,12 @@ trait Entry {
       $id = $this->id();
     }
 
-    return $this->load_content($this->entry_file_name($id),
+    $file_name = $this->entry_file_name($id);
+    $context = $this->doc_context($file_name);
+
+    return $this->load_content($file_name,
       $this->entry_uri($id), true,
-      $summary ? $this->config('excerpt_length') : null);
+      $summary ? $context->search('excerpt') : null);
   }
 
   public static function entry_created($id) {

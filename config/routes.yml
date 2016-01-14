@@ -2,6 +2,14 @@
   body: |
     #{JSON.generate(env)}
 
+- match: ^/context$
+  body: |
+    #{JSON.generate(context)}
+
+- match: ^/query$
+  body: |
+    #{URI.decode_www_component(env['QUERY_STRING'])}
+
 # Entry
 -
   match: '^(?<uri>/(?<id>[\w\W\d]{4})/)(?:index.html)?$'

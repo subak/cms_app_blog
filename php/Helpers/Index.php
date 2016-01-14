@@ -12,9 +12,9 @@ class Index extends Page
 {
   use Traits\Content, Traits\Entry;
 
-  public function __construct($context) {
-    parent::__construct($context);
-  }
+//  public function __construct($context) {
+//    parent::__construct($context);
+//  }
 
   public function ids() {
     static $ids = null;

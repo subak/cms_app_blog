@@ -6,26 +6,25 @@ class Entry extends Page
 {
   use Traits\Content, Traits\Entry;
 
-  private $id;
-
-  public function __construct($context) {
-    parent::__construct($context);
-    $this->id = $this->context('id');
-  }
-
   public function id() {
-    return $this->id;
+    return $this->context('id');
   }
 
-  public function title() {
-    static $title = null;
-    if (is_null($title)) {
-      $title = trim(self::entry_title($this->id()));
+  public function context($key=null, $scan_or_name=false) {
+    static $context = null;
+    if (is_null($context)) {
+      $context = $this->entry_context(parent::page_context(),
+        parent::page_context()->search('id'));
     }
-    return join(" | ", [$title, parent::title()]);
+
+    if (is_null($key)) {
+      return $context;
+    } else {
+      return parent::search_context($context, $key, $scan_or_name);
+    }
   }
 
-  public function meta($key) {
+  public function meta($key=null) {
     static $meta = null;
     if (is_null($meta)) {
       $id = $this->id();
