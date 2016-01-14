@@ -10,17 +10,17 @@ class Entry extends Page
     return $this->context('id');
   }
 
-  public function context($key=null, $scan_or_name=false) {
+  public function context($key=null, $desc=true, $multiple=false) {
     static $context = null;
 
     if (is_null($context)) {
-      $context = $this->entry_context(parent::page_context()->search('id'));
+      $context = $this->entry_context(parent::page_context()->get('id'));
     }
 
     if (is_null($key)) {
       return $context;
     } else {
-      return parent::search_context($context, $key, $scan_or_name);
+      return $context->get($key, $desc, $multiple);
     }
   }
 

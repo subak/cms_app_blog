@@ -34,7 +34,7 @@ trait Entry {
 
     return $this->doc_body($file_name,
       $this->entry_uri($id),
-      $summary ? $context->search('excerpt') : null);
+      $summary ? $context->get('excerpt') : null);
   }
 
   public function entry($id=null, $summary=false) {
@@ -47,7 +47,7 @@ trait Entry {
 
     return $this->load_content($this->entry_file_name($id),
       $this->entry_uri($id), true,
-      $summary ? $context->search('excerpt') : null);
+      $summary ? $context->get('excerpt') : null);
   }
 
   public static function entry_created($id) {
