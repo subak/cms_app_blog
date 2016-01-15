@@ -3,13 +3,10 @@
 namespace Helpers\Traits;
 
 trait Content {
-  protected function detect_content($file_name) {
-    $info = pathinfo($file_name);
-    if (!array_key_exists('extension', $info)) {
-      $file_name = trim(`find ${file_name}.* -type f | egrep '(\.md|\.rst|\.adoc)' | head -n 1`);
-      $info = pathinfo($file_name);
-    }
-    return "${info['dirname']}/${info['basename']}";
+  protected function doc_context($file_name) {
+    $context = new \Context(\Helpers\Page::page_context()->stack());
+    $context->insert_before('handler', $this->doc_metadata($file_name), 'doc');
+    return $context;
   }
 
   protected function doc_metadata($file_name) {
@@ -21,10 +18,13 @@ trait Content {
     }
   }
 
-  protected function doc_context($file_name) {
-    $context = new \Context(\Helpers\Page::page_context()->stack());
-    $context->insert_before('handler', $this->doc_metadata($file_name), 'doc');
-    return $context;
+  protected function detect_document($file_name) {
+    $info = pathinfo($file_name);
+    if (!array_key_exists('extension', $info)) {
+      $file_name = trim(`find ${file_name}.* -type f | egrep '(\.md|\.rst|\.adoc)' | head -n 1`);
+      $info = pathinfo($file_name);
+    }
+    return "${info['dirname']}/${info['basename']}";
   }
 
   protected function rel_content_dir($path) {
@@ -38,39 +38,9 @@ trait Content {
     return $rel_dir;
   }
 
-  protected function pandoc_filter($including_title, $excerpt) {
-    if ($including_title) {
-      $filter = ' | jq .';
-    } else {
-      $filter = " | jq '[.[0],.[1][1:]]'";
-    }
-
-    if (!is_null($excerpt)) {
-      $filter .= " | jq '[.[0],.[1][0:${excerpt}]]'";
-    }
-
-    return $filter;
-  }
-
-  protected function adoc_filter($including_title, $excerpt) {
-    $selectors = [];
-
-    if ($including_title) {
-      $selectors[] = '#header > :nth-child(n+0)';
-    }
-
-    if (is_null($excerpt)) {
-      $selectors[] = '#content > :nth-child(n+0)';
-      $selectors[] = '#footnotes > :nth-child(n+0)';
-    } else {
-      for ($i=1; $i<=$excerpt; $i++) {
-        $selectors[] = "#content > :nth-child(${i})";
-      }
-    }
-
-    $selector = join(',', $selectors);
-
-    return " | pup --pre '${selector}'";
+  public function doc_title($file_name) {
+    $path = $this->detect_document($file_name);
+    return trim(`head -1 ${path} | sed -r 's/^[#= ]*(.+)[#= ]*$/\\1/'`);
   }
 
   protected function rel_filter($rel_dir, $assets) {
@@ -80,71 +50,128 @@ trait Content {
 EOF;
   }
 
-  public function doc_title($file_name) {
-    $path = $this->detect_content($file_name);
-    return trim(`head -1 ${path} | sed -r 's/^[#= ]*(.+)[#= ]*$/\\1/'`);
+  protected function doc_filter($ext, $opts) {
+    $body_method = "${ext}_body";
+    $full_method = "${ext}_full";
+    $excerpt_method = "${ext}_excerpted";
+
+    if (array_key_exists('including_title', $opts) && $opts['including_title']) {
+      return $this->$full_method();
+    } else if (array_key_exists('excerpt', $opts) && !is_null($opts['excerpt'])) {
+      return $this->$excerpt_method($opts['excerpt']);
+    } else {
+      return $this->$body_method();
+    }
   }
 
-  public function doc_body($file_name, $uri, $excerpt=null) {
-    return $this->load_content($file_name, $uri, false, $excerpt);
-  }
-
-  public function doc_body_excerpt($file_name, $uri, $excerpt) {
+  protected function adoc_full() {
 
   }
 
-  /**
-   * @param $file_name
-   * @param $uri
-   * @param bool $including_title
-   * @param null $excerpt
-   * @return null
-   * @throws \Exception
-   */
-  public function load_content($file_name, $uri, $including_title=false, $excerpt=null) {
-    $path = $this->detect_content($file_name);
+  protected  function md_full() {
+
+  }
+
+  protected function adoc_body() {
+    return "| pup --pre 'body > :not(#header)' | pup --pre 'body > :not(#footer)'";
+  }
+
+  protected function md_body() {
+    return "| pup --pre 'body > :not(h1)'";
+  }
+
+  protected function adoc_excerpted($length) {
+    $selectors = [];
+    for ($i=1; $i<$length; $i++) {
+      $selectors[] = "#content > :nth-child(${i})";
+    }
+    $selector = join(',', $selectors);
+    return "| pup --pre '${selector}'";
+  }
+
+  protected function md_excerpted($length) {
+    $selectors = [];
+    for ($i=1; $i<=$length; $i++) {
+      $pos = $i + 1;
+      $selectors[] = "body > :nth-child(${pos})";
+    }
+    $selector = join(',', $selectors);
+    return "| pup --pre '${selector}'";
+  }
+
+  protected function adoc_option($context) {
+    $attributes = $context->get('asciidoctor.attributes');
+    $requires = $context->get('asciidoctor.requires');
+
+    $options = [];
+
+    if (!is_null($attributes)) {
+      foreach ($attributes as $key => $val) {
+        $options[] = "-a ${key}=${val}";
+      }
+    }
+
+    if (!is_null($requires)) {
+      foreach ($requires as $require) {
+        $options[] = "-r ${require}";
+      }
+    }
+
+    return join(' ', $options);
+  }
+
+  protected function md_option($context) {
+    $meta = $context->get('pandoc.md');
+    return "-f ${meta['from']} -t ${meta['to']}";
+  }
+
+  protected function doc_option($ext, $context) {
+    $method = "${ext}_option";
+    return $this->$method($context);
+  }
+
+  protected function adoc_gen($path) {
+    $basename = basename($path);
+    $content_dir = "/tmp/cms";
+    $rel_content_dir = $this->rel_content_dir($path);
+    $destination_dir = "${content_dir}/${rel_content_dir}";
+    fputs(STDERR, `mkdir -pv ${destination_dir}`);
+    $tmp_path = "${destination_dir}/${basename}";
+    copy($path, $tmp_path);
+
+    return $tmp_path;
+  }
+
+  public function load_document($file_name, $uri, $params=[]) {
+    $path = $this->detect_document($file_name);
     $info = pathinfo($path);
+    $ext = $info['extension'];
     $context = $this->doc_context($file_name);
     $rel_dir = $this->rel_dir($path, $uri);
     $assets = $context->get('resources');
 
-    if ($out_dir = $context->get('out_dir')) {
-      $msg = $this->build_content_resource($path, $out_dir);
-      fputs(STDERR, $msg);
-    }
+    $option = $this->doc_option($ext, $context);
+    $filter = $this->doc_filter($ext, $params);
+    $filter .= $this->rel_filter($rel_dir, $assets);
 
-    $ext = $info['extension'];
     switch ($ext) {
-      case 'md':
-      case 'rst':
-        $filter = $this->pandoc_filter($including_title, $excerpt);
-        $filter .= $this->rel_filter($rel_dir, $assets);
-        $format = $context->get("pandoc_format_${ext}");
-        return `pandoc -f ${format} -t json ${path} ${filter} | pandoc -f json -t html5`;
       case 'adoc':
-        $filter = $this->adoc_filter($including_title, $excerpt);
-        $filter .= $this->rel_filter($rel_dir, $assets);
-        $option = $context->get('asciidoctor_option');
-
-        if ($context->get('diagram')) {
-          $content_dir = "/tmp/cms";
-          $destination_dir = $content_dir.'/'.$this->rel_content_dir($path);
-          fputs(STDERR, `mkdir -pv ${destination_dir}`);
-          $tmp_path = "${destination_dir}/${info['basename']}";
-          copy($path, $tmp_path);
-
-          if ($out_dir) {
-            $msg = $this->build_content_resource($tmp_path, $content_dir, $out_dir);
-            fputs(STDERR, $msg);
-          }
-
-          return `asciidoctor ${option} -r asciidoctor-diagram -o - ${tmp_path} ${filter}`;
-        } else {
-          return `asciidoctor ${option} -o - ${path} ${filter}`;
+        if (($requires = $context->get('asciidoctor.requires'))
+          && is_int(array_search('asciidoctor-diagram', $requires))) {
+          $path = $this->adoc_gen($path);
         }
-      default:
-        throw new \Exception();
+        $cmd = "asciidoctor ${option} -o - ${path} ${filter}";
+        break;
+      case 'md':
+        $cmd = "pandoc ${option} ${path} ${filter}";
+        break;
     }
+
+    if ($out_dir=$context->get('out_dir')) {
+      fputs(STDERR, $this->build_content_resource($path, $out_dir));
+    }
+
+    return `${cmd}`;
   }
 
   protected function build_content_resource($file_name, $out_dir) {

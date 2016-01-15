@@ -43,13 +43,7 @@ class Context
   private function filter($key, $context) {
     $value = null;
     $path = preg_replace('@\.([^.]+)@', "['\\1']", '.'.ltrim($key, '.'));
-
-    try {
-      eval('$value=$context'.$path.';');
-    } catch(Exception $e) {
-
-    }
-
+    @eval('$value=@$context'.$path.';');
     return $value;
   }
 
