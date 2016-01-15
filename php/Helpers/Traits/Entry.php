@@ -16,25 +16,14 @@ trait Entry {
     return "/${id}/";
   }
 
-  public function entry_title($id=null) {
-    if (is_null($id)) {
-      $id = $this->id();
-    }
-
+  public function entry_title($id) {
     return $this->doc_title($this->entry_file_name($id));
   }
 
-  public function entry_body($id=null, $summary=false) {
-    if (is_null($id)) {
-      $id = $this->id();
-    }
-
-    $file_name = $this->entry_file_name($id);
-    $context = $this->doc_context($file_name);
-
-    return $this->doc_body($file_name,
-      $this->entry_uri($id),
-      $summary ? $context->get('excerpt') : null);
+  public function entry_body($id, $params=[]) {
+    return $this->load_document(
+      $this->entry_file_name($id),
+      $this->entry_uri($id), $params);
   }
 
   public function entry($id=null, $summary=false) {

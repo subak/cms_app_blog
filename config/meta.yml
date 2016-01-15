@@ -10,3 +10,17 @@ resources:
   - svg
 excerpt: 2
 
+pandoc:
+  md:
+    from: markdown_github+footnotes+inline_notes
+    to: html5
+  rst:
+    from: rst
+    to: html5
+
+#asciidoctor:
+#  attributes:
+#    source-highlighter: pygments
+#  requires:
+#    - asciidoctor-diagram
+
