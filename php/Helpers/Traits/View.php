@@ -49,6 +49,10 @@ trait View {
       }
     }
 
+    if ($query = $this->context('query')) {
+      $option['href'] .= "?${query}";
+    }
+
     return $this->tag('a', $content, $option, $args);
   }
 

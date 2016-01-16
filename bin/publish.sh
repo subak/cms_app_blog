@@ -2,8 +2,8 @@
 
 set -eu
 
-export PUBLISH_MODE=1
 out_dir=${1}
+export PUBLISH=${out_dir}
 local=${2:-local}
 MAX_PROCS=${MAX_PROCS:-4}
 
