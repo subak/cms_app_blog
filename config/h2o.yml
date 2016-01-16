@@ -3,10 +3,11 @@ hosts:
   default:
     paths:
       /:
-        file.dir: app/public
+        file.dir: html/public
         mruby.handler-file: web/ruby/handler.rb
         file.dir: content
         file.dir: /tmp/cms
+        file.dir: html/stylesheets
 
 access-log: /dev/stdout
 error-log: /dev/stderr

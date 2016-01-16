@@ -1,9 +1,6 @@
 content_include_dir: include
 num_of_entries_per_page: 5
 num_of_elements_in_summary: 3
-pandoc_format_md: markdown_github+footnotes+inline_notes
-pandoc_format_rst: rst
-asciidoctor_option: '-a source-highlighter=pygments'
 resources:
   - jpg
   - png

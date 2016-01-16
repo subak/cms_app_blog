@@ -53,6 +53,12 @@
   condition: |
     File.exists?('app/php/views',context['view']))
 
+# css
+-
+ match: '^.+\.css$'
+ handler: sass.sh
+ content_type: text/css; charset=utf-8
+
 # Xml
 -
   match: '^(?<view>(?<uri>(/[^/]+)*/[^/]+\.xml))$'
