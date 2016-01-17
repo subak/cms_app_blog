@@ -15,6 +15,9 @@ class Entry extends Page
 
     if (is_null($context)) {
       $context = $this->entry_context(parent::page_context()->get('id'));
+      if(!$context->get_by_name('title', 'entry')) {
+        $context->set('title', $this->entry_title($context->get('id')), 'entry');
+      }
     }
 
     if (is_null($key)) {

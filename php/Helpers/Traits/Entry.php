@@ -8,7 +8,7 @@ trait Entry {
   }
 
   protected function entry_context($id) {
-    return $this->doc_context($this->entry_file_name($id));
+    return $this->doc_context($this->entry_file_name($id), 'entry');
   }
 
   protected function entry_uri($id) {
