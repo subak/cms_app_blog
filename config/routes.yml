@@ -10,6 +10,19 @@
   body: |
     #{URI.decode_www_component(env['QUERY_STRING'])}
 
+- match: ^/ruby$
+  body: |
+    #{"abc".sub(/c$/, 'd')}
+
+- match: ^/cache_clear$
+  body: |
+    <pre>#{`rm -rfv /tmp/cms/*`}</pre>
+
+-
+  match: '\.md|\.yml'
+  status: 403
+  body: forbidden
+
 # Entry
 -
   match: '^(?<uri>/(?<id>[\w\W\d]{4})/)(?:index.html)?$'
@@ -17,6 +30,7 @@
   view: index.html
   main: entry.html
   helper: Entry
+  cache: 'html/views/* content/*'
 
 # Archive
 -
@@ -31,6 +45,7 @@
   handler: page.php
   view: index.html
   helper: Index
+  cache: 'html/views/* content/*'
   page: 1
 
 # Paginated Index
@@ -39,17 +54,14 @@
   handler: page.php
   view: index.html
   helper: Index
-
--
-  match: '\.md|\.yml'
-  status: 403
-  body: forbidden
+  cache: 'html/views/* content/*'
 
 # Directory
 -
   match: '^(?<view>(?<uri>(/[^/]+)*/)(?:index\.html))$'
   handler: page.php
   helper: Page
+  cache: 'html/views/* content/*'
   condition: |
     File.exists?('app/php/views',context['view']))
 
@@ -62,9 +74,10 @@
 # Xml
 -
   match: '^(?<view>(?<uri>(/[^/]+)*/[^/]+\.xml))$'
+  content_type: application/xml; charset=utf-8
   handler: page.php
   helper: Page
-  content_type: application/xml; charset=utf-8
+  cache: 'html/views/* content/*'
   condition: |
     File.exists?(File.join('app/php/views',context['view']))
 
@@ -73,5 +86,6 @@
   match: '^(?<view>(?<uri>(/[^/]+)*/[^/]+))$'
   handler: page.php
   helper: Page
+  cache: 'html/views/* content/*'
   condition: |
     File.exists?(File.join('app/php/views',context['view']))
