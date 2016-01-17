@@ -3,9 +3,9 @@
 namespace Helpers\Traits;
 
 trait Content {
-  protected function doc_context($file_name) {
+  protected function doc_context($file_name, $name='doc') {
     $context = new \Context(\Helpers\Page::page_context()->stack());
-    $context->insert_before('handler', $this->doc_metadata($file_name), 'doc');
+    $context->insert_before('handler', $this->doc_metadata($file_name), $name);
     return $context;
   }
 
@@ -82,7 +82,7 @@ EOF;
 
   protected function adoc_excerpted($length) {
     $selectors = [];
-    for ($i=1; $i<$length; $i++) {
+    for ($i=1; $i<=$length; $i++) {
       $selectors[] = "#content > :nth-child(${i})";
     }
     $selector = join(',', $selectors);

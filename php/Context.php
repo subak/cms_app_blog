@@ -31,6 +31,21 @@ class Context
     }
   }
 
+  public function get_by_name($key, $name) {
+    $index = $this->find_stack($name);
+    return is_null($index) ? null : $this->filter($key, $this->stack[$index]['context']);
+  }
+
+  protected function key2path($key) {
+    return preg_replace('@\.([^.]+)@', "['\\1']", '.'.ltrim($key, '.'));
+  }
+
+  public function set($key, $value, $name=null) {
+    $index = is_null($name) ? (count($this->stack) - 1) : $this->find_stack($name);
+    $path = $this->key2path($key);
+    @eval('@$this->stack[$index]["context"]'.$path.'=$value;');
+  }
+
   private function find_stack($name) {
     $index = array_search($name, array_column($this->stack, 'name'));
     if (array_key_exists($index, $this->stack)) {
@@ -42,8 +57,8 @@ class Context
 
   private function filter($key, $context) {
     $value = null;
-    $path = preg_replace('@\.([^.]+)@', "['\\1']", '.'.ltrim($key, '.'));
-    @eval('$value=@$context'.$path.';');
+    $path = $this->key2path($key);
+    @eval('@$value=@$context'.$path.';');
     return $value;
   }
 
