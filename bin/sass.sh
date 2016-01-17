@@ -20,7 +20,7 @@ elif [ ! -e "${output}" ] || [ -n "$(find html/stylesheets/* -newer ${output})" 
   sassc -m -t compressed ${input} ${output}
 
   # fix path
-  sed -i 's/'$(echo "$(pwd)/html/stylesheets" | sed -E 's/([./])/\\\1/g')'//' "${output}.map"
+  sed -i 's/'$(echo "../..$(pwd)/html/stylesheets/" | sed -E 's/([./])/\\\1/g')'//' "${output}.map"
 
   cat "${output}"
 
