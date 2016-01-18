@@ -1,25 +1,10 @@
-- match: ^/env$
+-
+  match: '^/eval(?:/(?<expr>.+))?$'
   body: |
-    #{JSON.generate(env)}
-
-- match: ^/context$
-  body: |
-    #{JSON.generate(context)}
-
-- match: ^/query$
-  body: |
-    #{URI.decode_www_component(env['QUERY_STRING'])}
-
-- match: ^/ruby$
-  body: |
-    #{"abc".sub(/c$/, 'd')}
-
-- match: ^/cache_clear$
-  body: |
-    <pre>#{`rm -rfv /tmp/cms/*`}</pre>
+    #{eval(context['expr'])}
 
 -
-  match: '\.md|\.yml'
+  match: '(?:\.md|\.yml)$'
   status: 403
   body: forbidden
 
