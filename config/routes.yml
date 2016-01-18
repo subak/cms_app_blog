@@ -1,9 +1,10 @@
-- match: ^/env$
+-
+  match: '^/eval(?:/(?<expr>.+))?$'
   body: |
-    #{JSON.generate(env)}
+    #{eval(context['expr'])}
 
 -
-  match: '\.md|\.yml'
+  match: '(?:\.md|\.yml)$'
   status: 403
   body: forbidden
 
@@ -12,12 +13,20 @@
   match: '(?:\.jpg|\.png|\.svg)$'
   status: 399
 
+# css
+-
+  match: '\.css$'
+  handler: sass.sh
+  content_type: text/css; charset=utf-8
+  condition: |
+    File.exists?('html/stylesheets',context['uri']))
+
 # Directory
 -
   match: '^(?<view>(?<uri>(/[^/]+)*/)(?:index\.html))$'
   handler: page.php
   condition: |
-    File.exists?('html/views',context['view']))
+    File.exists?(File.join('html/views',context['uri']))
 
 # Xml
 -
@@ -25,11 +34,11 @@
   handler: page.php
   content_type: application/xml; charset=utf-8
   condition: |
-    File.exists?(File.join('html/views',context['view']))
+    File.exists?(File.join('html/views',context['uri']))
 
 # Index
 -
   match: '^(?<view>(?<uri>(/[^/]+)*/[^/]+))$'
   handler: page.php
   condition: |
-    File.exists?(File.join('html/views',context['view']))
+    File.exists?(File.join('html/views',context['uri']))
