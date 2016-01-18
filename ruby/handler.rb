@@ -13,14 +13,15 @@ class Handler
                   else true
                 end
 
-    if (condition)
+    status = context['status'] || 200
+
+    if (condition && status != 399)
       query = Hash[Hash[*env['QUERY_STRING'].scan(/([^=&]+)=([^=&]+)/).flatten].map{|k,v| [URI.decode_www_component(k),URI.decode_www_component(v)]}]
       context['query'] = env['QUERY_STRING'] unless env['QUERY_STRING'].empty?
       context.merge!(JSON.parse query['context']) if query['context']
       cache_path = "/tmp/cms#{context['uri']}".sub(/\/$/, '/index.html')
 
       if context['cache'].to_s.empty? || !File.exists?(cache_path) || !`find #{context['cache']} -newer #{cache_path}`.empty?
-        status = context['status'] || 200
         content_type = context['content_type'] || 'text/html; charset=utf-8'
         body = if context['body']
                  eval("<<EOF\n#{context['body']}\nEOF\n")
