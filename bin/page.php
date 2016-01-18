@@ -1,8 +1,10 @@
 #!/usr/bin/env php
 <?php
 
-set_include_path(get_include_path().PATH_SEPARATOR.'app/php'.PATH_SEPARATOR.'web/php');
+set_include_path(join(PATH_SEPARATOR, [
+  get_include_path(), 'app/php', 'web/php', 'html/views']));
 
+#set_include_path(get_include_path().PATH_SEPARATOR.'app/php'.PATH_SEPARATOR.'web/php');
 
 require_once 'web/php/function.php';
 if ($path = stream_resolve_include_path('app/php/function.php')) {
@@ -23,6 +25,6 @@ spl_autoload_register(function ($name)
 
 $klass = "\\Helpers\\${context['helper']}";
 $helper = new $klass($context);
-$helper->render();
+$helper->include($context['view']);
 
 exit(0);

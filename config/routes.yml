@@ -13,7 +13,7 @@
   handler: page.php
   helper: Page
   condition: |
-    File.exists?('app/php/views',context['view']))
+    File.exists?('html/views',context['view']))
 
 # Xml
 -
@@ -22,7 +22,7 @@
   helper: Page
   content_type: application/xml; charset=utf-8
   condition: |
-    File.exists?(File.join('app/php/views',context['view']))
+    File.exists?(File.join('html/views',context['view']))
 
 # Index
 -
@@ -30,4 +30,4 @@
   handler: page.php
   helper: Page
   condition: |
-    File.exists?(File.join('app/php/views',context['view']))
+    File.exists?(File.join('html/views',context['view']))
