@@ -16,7 +16,6 @@
 -
   match: '^(?<view>(?<uri>(/[^/]+)*/)(?:index\.html))$'
   handler: page.php
-  helper: Page
   condition: |
     File.exists?('html/views',context['view']))
 
@@ -24,7 +23,6 @@
 -
   match: '^(?<view>(?<uri>(/[^/]+)*/[^/]+\.xml))$'
   handler: page.php
-  helper: Page
   content_type: application/xml; charset=utf-8
   condition: |
     File.exists?(File.join('html/views',context['view']))
@@ -33,6 +31,5 @@
 -
   match: '^(?<view>(?<uri>(/[^/]+)*/[^/]+))$'
   handler: page.php
-  helper: Page
   condition: |
     File.exists?(File.join('html/views',context['view']))

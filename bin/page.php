@@ -14,16 +14,29 @@ if ($path = stream_resolve_include_path('app/php/function.php')) {
 $context = json_decode(end($_SERVER["argv"]), true);
 reset($_SERVER["argv"]);
 
+function search_class_file($name) {
+  $file_name = str_replace('\\', '/', ltrim($name, '\\'));
+  return stream_resolve_include_path($file_name.'.php');
+}
+
 spl_autoload_register(function ($name)
 {
-  $file_name = str_replace('\\', '/', ltrim($name, '\\'));
-  if ($path = stream_resolve_include_path($file_name.'.php')) {
-    return include $path;
-  }
-  return false;
+  return ($path = search_class_file($name)) ?
+    include $path : false;
 });
 
-$klass = "\\Helpers\\${context['helper']}";
+if (array_key_exists('helper', $context)) {
+  $helper = $context['helper'];
+} else {
+  $helper = str_replace('-', '\\', ucwords(preg_replace(
+    '@^(?:[^/]*/)*([^/.]+)(?:\.[^.]*)*$@','\1',
+    $context['view']), '_-'));
+  if (!search_class_file("\\Helpers\\${helper}")) {
+    $helper = 'Page';
+  }
+}
+
+$klass = "\\Helpers\\${helper}";
 $helper = new $klass($context);
 $helper->include($context['view']);
 
