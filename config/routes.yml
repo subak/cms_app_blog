@@ -27,8 +27,7 @@
 -
   match: '^(?<uri>/(?<id>[\w\W\d]{4})/)(?:index.html)?$'
   handler: page.php
-  view: index.html
-  main: entry.html
+  view: entry.html
   helper: Entry
   cache: 'html/views/* content/*'
 
@@ -63,7 +62,7 @@
   helper: Page
   cache: 'html/views/* content/*'
   condition: |
-    File.exists?('app/php/views',context['view']))
+    File.exists?('html/views',context['view']))
 
 # css
 -
@@ -79,7 +78,7 @@
   helper: Page
   cache: 'html/views/* content/*'
   condition: |
-    File.exists?(File.join('app/php/views',context['view']))
+    File.exists?(File.join('html/views',context['view']))
 
 # Index
 -
@@ -88,4 +87,4 @@
   helper: Page
   cache: 'html/views/* content/*'
   condition: |
-    File.exists?(File.join('app/php/views',context['view']))
+    File.exists?(File.join('html/views',context['view']))
