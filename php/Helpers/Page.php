@@ -6,20 +6,10 @@ class Page
 {
   use Traits\View, Traits\Content;
 
-  protected $stack=[];
-
   public function __construct($context) {
     self::page_context()->register(yaml_parse_file('app/config/meta.yml'), 'app');
     self::page_context()->register(yaml_parse_file('content/meta.yml'), 'content');
     self::page_context()->register($context, 'handler');
-  }
-
-  protected function push($name) {
-    return array_push($this->stack, $name);
-  }
-
-  protected function pop() {
-    return array_pop($this->stack);
   }
 
   protected function router() {
@@ -70,26 +60,6 @@ class Page
     } else {
       throw new \Exception($rel_path);
     }
-  }
-
-  public function content($dir=null) {
-    $view = $this->context('view');
-
-    if (is_null($dir)) {
-      $dir = $this->context('content_include_dir');
-    }
-    $dir = '/'.trim($dir, '/').'/';
-
-    if (is_null($this->context('main'))) {
-      $path = dirname($view).$dir.basename($view);
-    } else {
-      $path = dirname($view).$dir.$this->context('main');
-    }
-
-    if ($path = stream_resolve_include_path('views/'.$path)) {
-      include $path;
-    }
-    return null;
   }
 
   protected function is_dir($uri) {

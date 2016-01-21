@@ -28,9 +28,11 @@ spl_autoload_register(function ($name)
 if (array_key_exists('helper', $context)) {
   $helper = $context['helper'];
 } else {
-  $helper = str_replace('-', '\\', ucwords(preg_replace(
+  $helper = preg_replace(
     '@^(?:[^/]*/)*([^/.]+)(?:\.[^.]*)*$@','\1',
-    $context['view']), '_-'));
+    $context['view']);
+  $helper = ucwords($helper, '_-');
+  $helper = str_replace(['-', '_'], ['\\', ''], $helper);
   if (!search_class_file("\\Helpers\\${helper}")) {
     $helper = 'Page';
   }

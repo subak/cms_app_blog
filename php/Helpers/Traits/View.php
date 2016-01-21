@@ -3,18 +3,6 @@
 namespace Helpers\Traits;
 
 trait View {
-  protected function attr($array) {
-    $attributes = array();
-    foreach ($array as $name => $value) {
-      if (is_array($value)) {
-        $value = join(" ", $value);
-      }
-      $attributes[] = "${name}=\"${value}\"";
-    }
-    $attr = empty($attributes) ? "" : " ".join(" ", $attributes);
-    return $attr;
-  }
-
   public function tag($tag, $content=null, $option=array(), $args=array()) {
     $tags = array('br','img','hr','meta','input','embed','area','base','col','keygen','link','param','source');
 
@@ -37,6 +25,18 @@ trait View {
     } else {
       return "<${tag}${attr}>${content}</${tag}>";
     }
+  }
+
+  protected function attr($array) {
+    $attributes = array();
+    foreach ($array as $name => $value) {
+      if (is_array($value)) {
+        $value = join(" ", $value);
+      }
+      $attributes[] = "${name}=\"${value}\"";
+    }
+    $attr = empty($attributes) ? "" : " ".join(" ", $attributes);
+    return $attr;
   }
 
   public function link_to($content, $path, $option=array(), $args=array()) {
