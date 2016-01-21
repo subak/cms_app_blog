@@ -7,7 +7,11 @@ class Entry extends Page
   use Traits\Entry;
 
   public function id() {
-    return $this->context('id');
+    $id = $this->context('id');
+    if (is_null($id)) {
+      throw new \Exception('id');
+    }
+    return $id;
   }
 
   public function context($key=null, $desc=true, $multiple=false) {
