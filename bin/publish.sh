@@ -15,5 +15,6 @@ filter="jq -c '. ${local_context}'"
 
 find html/public/* -maxdepth 0 -print0 | xargs -0 -I@ cp -rv @ "${out_dir}"
 
-uris.sh | xargs -P0 -I@ router.rb @ | eval "${filter}" \
- | tr '\n' '\0' | xargs -0 -P${MAX_PROCS} -I@ build.sh @ ${out_dir}
+uris.sh \
+  | xargs -P0 -I@ router.rb @ | eval "${filter}" \
+  | xargs -d'\n' -P${MAX_PROCS} -I@ build.sh @ ${out_dir}

@@ -2,7 +2,7 @@
 
 export BUILD=$2
 
-set -eu
+set -u
 
 params=$1
 out_dir=$2
@@ -20,5 +20,4 @@ echo ${to_file} | egrep '/$' >/dev/null && to_file=${to_dir}/index.html
 [ -e ${to_dir} ] || mkdir -pv ${to_dir}
 
 res=$(eval "${handler}" "'"${params}"'")
-echo "${res}" > ${to_file}
-echo ${to_file}
+[ "${?}" -eq 0 ] && echo "${res}" > ${to_file} && echo ${to_file}
