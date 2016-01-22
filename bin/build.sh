@@ -21,3 +21,4 @@ echo ${to_file} | egrep '/$' >/dev/null && to_file=${to_dir}/index.html
 
 res=$(eval "${handler}" "'"${params}"'")
 [ "${?}" -eq 0 ] && echo "${res}" > ${to_file} && echo ${to_file}
+exit 0
