@@ -13,7 +13,7 @@
   match: '^(?<uri>/(?<id>[\w\W\d]{4})/)(?:index.html)?$'
   handler: page.php
   view: entry.html
-  cache: 'html/views/* content/*'
+  cache: 'html/* content/*'
 
 # Archive
 -
@@ -27,7 +27,7 @@
   match: '^(?<uri>/)(?:index\.html)?$'
   handler: page.php
   view: index.html
-  cache: 'html/views/* content/*'
+  cache: 'html/* content/*'
   page: 1
 
 # Paginated Index
@@ -35,35 +35,37 @@
   match: '^(?<uri>/page/(?<page>[\d]+)/)(?:index\.html)?$'
   handler: page.php
   view: index.html
-  cache: 'html/views/* content/*'
+  cache: 'html/* content/*'
 
 # Directory
 -
   match: '^(?<view>(?<uri>(/[^/]+)*/)(?:index\.html))$'
   handler: page.php
-  cache: 'html/views/* content/*'
+  cache: 'html/* content/*'
   condition: |
-    File.exists?('html/views',context['view']))
+    File.exists?(File.join('html',context['view'].sub(/\.html$/,'.html.php')))
 
 # css
 -
  match: '^.+\.css$'
  handler: sass.sh
  content_type: text/css; charset=utf-8
+ condition: |
+   !`find html/#{context['uri'].sub(/\.css$/, 's[ac]ss')}`.empty?
 
 # Xml
 -
   match: '^(?<view>(?<uri>(/[^/]+)*/[^/]+\.xml))$'
   content_type: application/xml; charset=utf-8
   handler: page.php
-  cache: 'html/views/* content/*'
+  cache: 'html/* content/*'
   condition: |
-    File.exists?(File.join('html/views',context['view']))
+    File.exists?(File.join('html',context['view'].sub(/\.xml$/,'.xml.php')))
 
 # Index
 -
   match: '^(?<view>(?<uri>(/[^/]+)*/[^/]+))$'
   handler: page.php
-  cache: 'html/views/* content/*'
+  cache: 'html/* content/*'
   condition: |
-    File.exists?(File.join('html/views',context['view']))
+    File.exists?(File.join('html',context['view'].sub(/\.html$/,'.html.php')))
