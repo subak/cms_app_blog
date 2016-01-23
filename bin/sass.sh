@@ -6,7 +6,7 @@ context="${@}"
 
 uri=$(echo ${context} | jq -r '.uri')
 
-input="html/stylesheets${uri%.css}.*"
+input="html${uri%.css}.s[ac]ss"
 out_dir=${BUILD:-/tmp/cms}
 output="${out_dir}${uri}"
 

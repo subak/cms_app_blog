@@ -2,7 +2,7 @@
 <?php
 
 set_include_path(join(PATH_SEPARATOR, [
-  get_include_path(), 'app/php', 'web/php', 'html/views']));
+  get_include_path(), 'app/php', 'web/php', 'html']));
 
 require_once 'web/php/function.php';
 if ($path = stream_resolve_include_path('app/php/function.php')) {
@@ -38,6 +38,6 @@ if (array_key_exists('helper', $context)) {
 
 $klass = "\\Helpers\\${helper}";
 $helper = new $klass($context);
-$helper->include($context['view']);
+$helper->include(preg_replace('@\.([^.]+)$@', '.\1.php', $context['view']));
 
 exit(0);

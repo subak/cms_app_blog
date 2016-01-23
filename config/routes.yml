@@ -19,14 +19,14 @@
   handler: sass.sh
   content_type: text/css; charset=utf-8
   condition: |
-    File.exists?('html/stylesheets',context['uri']))
+    !`find html/#{context['uri'].sub(/\.css$/, '.s[ac]ss')}`.empty?
 
 # Directory
 -
   match: '^(?<view>(?<uri>(/[^/]+)*/)(?:index\.html))$'
   handler: page.php
   condition: |
-    File.exists?(File.join('html/views',context['uri']))
+    File.exists?(File.join('html',context['uri']))
 
 # Xml
 -
@@ -34,11 +34,11 @@
   handler: page.php
   content_type: application/xml; charset=utf-8
   condition: |
-    File.exists?(File.join('html/views',context['uri']))
+    File.exists?(File.join('html',context['uri']))
 
 # Index
 -
   match: '^(?<view>(?<uri>(/[^/]+)*/[^/]+))$'
   handler: page.php
   condition: |
-    File.exists?(File.join('html/views',context['uri']))
+    File.exists?(File.join('html',context['uri']))
