@@ -19,7 +19,7 @@
   handler: sass.sh
   content_type: text/css; charset=utf-8
   condition: |
-    !`find html/#{context['uri'].sub(/\.css$/, '.s[ac]ss')}`.empty?
+    !`find html#{context['uri'].sub(/\.css$/, '.s[ac]ss')}`.empty?
 
 # Directory
 -
