@@ -14,13 +14,10 @@ if [ -n "${BUILD:-}" ]; then
 
   sassc -t compressed ${input}
 
-elif [ ! -e "${output}" ] || [ -n "$(find html/stylesheets/* -newer ${output})" ]; then
+elif [ ! -e "${output}" ]; then
   [ -e "${output%/*}" ] || mkdir -pv "${output%/*}" 1>/dev/stderr
 
   sassc -m -t compressed ${input} ${output}
-
-  # fix path
-  sed -i 's/'$(echo "../..$(pwd)/html/stylesheets/" | sed -E 's/([./])/\\\1/g')'//' "${output}.map"
 
   cat "${output}"
 
