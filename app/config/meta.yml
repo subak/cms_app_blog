@@ -1,0 +1,6 @@
+pandoc_format_md: markdown_github+footnotes+inline_notes
+pandoc_format_rst: rst
+resources:
+  - jpg
+  - png
+  - svg
