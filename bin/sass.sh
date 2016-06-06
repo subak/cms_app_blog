@@ -14,7 +14,7 @@ if [ -n "${BUILD:-}" ]; then
 
   sassc -t compressed ${input}
 
-elif [ ! -e "${output}" ]; then
+elif [ ! -e "${output}" ] || [ -n "$(find ${input} -newer ${output})" ]; then
   [ -e "${output%/*}" ] || mkdir -pv "${output%/*}" 1>/dev/stderr
 
   sassc -m -t compressed ${input} ${output}
