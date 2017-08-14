@@ -9,7 +9,8 @@ class Entry extends Page
   public function id() {
     $id = $this->context('id');
     if (is_null($id)) {
-      throw new \Exception('id');
+      $uri = $this->context('uri');
+      throw new \Exception("id(uri: ${uri})");
     }
     return $id;
   }
